@@ -10,13 +10,21 @@ Source lives in `src/app`, where `layout.tsx` defines shared shells and `page.ts
 - `npm run dev`: Launches the Next.js dev server on port 3000 with hot reload—use while iterating on memo features.
 - `npm run build`: Produces the optimized `.next` directory; run before releasing or changing build-time config.
 - `npm run start`: Serves the production build locally to verify deployment artifacts.
+- `npm run test`: Runs Jest (configured with `next/jest` + Testing Library) across `__tests__` and `*.test.ts(x)` files.
+- `npm run typecheck`: Runs `tsc --noEmit` to verify every file compiles under the strict TypeScript config.
 - `npm run lint`: Executes ESLint with `eslint-config-next`; resolve warnings before committing.
 
 ## Coding Style & Naming Conventions
 Use TypeScript with the strict settings already enabled; prefer functional React components and stay in the Server Components model unless `"use client"` is required. Indent with two spaces, keep component files in PascalCase, hooks/utilities in camelCase, and colocate feature-specific files under `src/app/<route>/`. Compose UI with Tailwind CSS v4 utilities, grouping related classes (layout, spacing, color) for readability, and extract repeated blocks into shared components under `src/app/components`.
 
 ## Testing Guidelines
-Automated tests are not wired up yet; plan to add React Testing Library + Vitest for units and Playwright for user flows. Place specs in `__tests__/component-name.test.tsx` or beside the component using the `.test.tsx` suffix, and describe expected behavior in the test title (`renders memo list`, `persists drafts`). Cover every new interactive behavior with at least one unit test and add a Playwright smoke path whenever routing or persistence changes. Run the future `npm test` script locally (and document temporary gaps) before opening a PR.
+Unit and component tests run through Jest with Testing Library (`@testing-library/react`, `@testing-library/jest-dom`). Place specs under `src/**/__tests__` or next to the implementation using the `.test.tsx` suffix, and import helpers from `@testing-library/react` for rendering client components. Mock data-fetching and routing via Next.js utilities as needed, and add Playwright end-to-end coverage only when the UX flow crosses multiple pages. Every bug fix or feature needs at least one failing test before implementation and all suites must pass via `npm run test` prior to merging; document any temporary skips in the PR.
+
+## Test-Driven Development
+Follow TDD by writing the minimal failing Jest test that captures the desired user behavior before touching production code. Iterate in red/green/refactor loops: (1) add/adjust a test under `__tests__`, (2) implement the memo feature until `npm run test` turns green, (3) clean up code and tests, ensuring accessibility and performance considerations remain covered. When a regression is reported, first codify it with a failing test, then fix it—no fixes land without reproducible automated coverage.
+
+## Validation Workflow
+After every code change, run `npm run typecheck` and `npm run lint` locally before pushing. This guards against type regressions (strict TS config) and style or accessibility issues caught by ESLint. CI will assume both commands pass, so fix all reported items or document intentional suppressions in the PR. When Codex agents contribute, they must run both commands before handing work back to the team and report the results in the final response.
 
 ## Commit & Pull Request Guidelines
 Write commits in imperative mood with focused scope (`Add memo editor`, `Fix theme toggle`), referencing related issues in the body when applicable. Pull requests should include: a concise summary, testing evidence (`npm run build`, screenshots or GIFs for UI), linked tasks, and rollout notes for any config or data changes. Request review once lint/build/test steps pass and call out follow-up work or known limitations in the PR description.
