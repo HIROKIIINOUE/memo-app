@@ -1,26 +1,209 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --page-bg: #f6f6f8;
+  --text-primary: #0c0d14;
+  --text-secondary: rgba(12, 13, 20, 0.78);
+  --text-muted: rgba(12, 13, 20, 0.56);
+  --text-inverse: #fdfdff;
+  --glass-surface: rgba(255, 255, 255, 0.85);
+  --card-surface: rgba(255, 255, 255, 0.92);
+  --chip-surface: rgba(12, 13, 20, 0.08);
+  --accent-panel: rgba(12, 13, 20, 0.9);
+  --border-soft: rgba(12, 13, 20, 0.16);
+  --btn-primary-bg: #0c0d14;
+  --btn-primary-color: #fdfdff;
+  --btn-primary-hover: #1a1c2b;
+  --btn-primary-shadow: 0 10px 35px rgba(12, 13, 20, 0.25);
+  --btn-secondary-border: rgba(12, 13, 20, 0.25);
+  --btn-secondary-color: rgba(12, 13, 20, 0.78);
+  --btn-secondary-hover-border: rgba(12, 13, 20, 0.45);
+  --btn-secondary-hover-color: #0c0d14;
+  --btn-ghost-bg: rgba(12, 13, 20, 0.04);
+  --btn-ghost-color: rgba(12, 13, 20, 0.65);
+  --btn-ghost-hover-border: rgba(12, 13, 20, 0.3);
+  --btn-ghost-border: rgba(12, 13, 20, 0.15);
+  --glow-1: #dff4ff;
+  --glow-2: #f4e8ff;
+  --glow-3: #d7ffe9;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page-bg: #030305;
+  --text-primary: #f5f7ff;
+  --text-secondary: rgba(245, 247, 255, 0.78);
+  --text-muted: rgba(245, 247, 255, 0.5);
+  --text-inverse: #fdfdff;
+  --glass-surface: rgba(0, 0, 0, 0.55);
+  --card-surface: rgba(255, 255, 255, 0.08);
+  --chip-surface: rgba(255, 255, 255, 0.07);
+  --accent-panel: rgba(0, 0, 0, 0.6);
+  --border-soft: rgba(255, 255, 255, 0.15);
+  --btn-primary-bg: #ffffff;
+  --btn-primary-color: #050505;
+  --btn-primary-hover: rgba(255, 255, 255, 0.9);
+  --btn-primary-shadow: 0 10px 35px rgba(255, 255, 255, 0.35);
+  --btn-secondary-border: rgba(255, 255, 255, 0.25);
+  --btn-secondary-color: rgba(255, 255, 255, 0.78);
+  --btn-secondary-hover-border: rgba(255, 255, 255, 0.45);
+  --btn-secondary-hover-color: #ffffff;
+  --btn-ghost-bg: rgba(255, 255, 255, 0.05);
+  --btn-ghost-color: rgba(255, 255, 255, 0.72);
+  --btn-ghost-border: rgba(255, 255, 255, 0.2);
+  --btn-ghost-hover-border: rgba(255, 255, 255, 0.45);
+  --glow-1: #e5f4ff;
+  --glow-2: #f0e1ff;
+  --glow-3: #c8ffe0;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--page-bg);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.6s ease, color 0.6s ease;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.15);
+  color: inherit;
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-inverse {
+  color: var(--text-inverse);
+}
+
+.theme-border-soft {
+  border-color: var(--border-soft);
+}
+
+.theme-bg-glass {
+  background: var(--glass-surface);
+}
+
+.theme-bg-card {
+  background: var(--card-surface);
+}
+
+.theme-bg-chip {
+  background: var(--chip-surface);
+}
+
+.theme-bg-accent {
+  background: var(--accent-panel);
+}
+
+.theme-btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  box-shadow: var(--btn-primary-shadow);
+}
+
+.theme-btn-primary:hover {
+  background: var(--btn-primary-hover);
+}
+
+.theme-btn-secondary {
+  border-color: var(--btn-secondary-border);
+  color: var(--btn-secondary-color);
+}
+
+.theme-btn-secondary:hover {
+  border-color: var(--btn-secondary-hover-border);
+  color: var(--btn-secondary-hover-color);
+}
+
+.theme-btn-ghost {
+  background: var(--btn-ghost-bg);
+  border-color: var(--btn-ghost-border);
+  color: var(--btn-ghost-color);
+}
+
+.theme-btn-ghost:hover {
+  border-color: var(--btn-ghost-hover-border);
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -140%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.8) 30%, transparent 60%);
+  opacity: 0;
+  transform: skewX(-20deg) translateX(0);
+}
+
+.btn-shimmer:active::after {
+  animation: shimmer-burst 0.6s ease;
+}
+
+@keyframes shimmer-burst {
+  0% {
+    opacity: 0;
+    transform: skewX(-20deg) translateX(-120%);
+  }
+  40% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: skewX(-20deg) translateX(150%);
+  }
+}
+
+.glow-blob {
+  filter: blur(140px);
+  opacity: 0.9;
+}
+
+.glow-blob.glow-1 {
+  background: var(--glow-1);
+}
+
+.glow-blob.glow-2 {
+  background: var(--glow-2);
+}
+
+.glow-blob.glow-3 {
+  background: var(--glow-3);
 }

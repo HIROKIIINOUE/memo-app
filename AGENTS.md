@@ -23,6 +23,10 @@ Source lives in `src/app`, where `layout.tsx` defines shared shells and `page.ts
 ## Coding Style & Naming Conventions
 Use TypeScript with the strict settings already enabled; prefer functional React components and stay in the Server Components model unless `"use client"` is required. Indent with two spaces, keep component files in PascalCase, hooks/utilities in camelCase, and colocate feature-specific files under `src/app/<route>/`. Compose UI with Tailwind CSS v4 utilities, grouping related classes (layout, spacing, color) for readability, and extract repeated blocks into shared components under `src/app/components`.
 
+## Design System
+- 画面やコンポーネントを追加/変更する際は、Apple ライクな質感を保つため必ず `documents/DESIGN_SYSTEM.md` を参照すること。
+- カラートークン・タイポグラフィ・モーションルールを更新した場合は `documents/DESIGN_SYSTEM.md` を同時に改訂し、PR で周知する。
+
 ## Database & Supabase Setup
 Provision a Supabase project, then copy the connection string from Dashboard → Settings → Database (`postgresql://postgres:<PASSWORD>@db.<project-ref>.supabase.co:5432/postgres?schema=public`). Store it as `DATABASE_URL` inside a local `.env`, alongside `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` (see `.env.example`). Run `npm run db:migrate` to create/align the `Memo` table defined in `prisma/schema.prisma`; use `npm run db:generate` whenever the schema changes. Server-side data access should use the shared `prisma` singleton (`src/lib/prisma.ts`) or `createSupabaseAdminClient()` (`src/lib/supabase.ts`)—never instantiate new clients per request. Use `GET /api/health` to verify the API can reach the database (it executes a lightweight `SELECT 1` via Prisma).
 
