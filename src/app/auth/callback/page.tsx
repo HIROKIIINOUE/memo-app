@@ -20,6 +20,18 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
 
+    const getHashParam = (key: string) => {
+      if (typeof window === "undefined") {
+        return null;
+      }
+      const hash = window.location.hash.startsWith("#")
+        ? window.location.hash.slice(1)
+        : "";
+      if (!hash) return null;
+      const params = new URLSearchParams(hash);
+      return params.get(key);
+    };
+
     const finishWithTokens = async () => {
       const hash = typeof window !== "undefined" ? window.location.hash : "";
       if (hash) {
@@ -49,6 +61,16 @@ export default function AuthCallbackPage() {
       }
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (error) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          toast.success("サインインしました", {
+            description: "メモボードに移動します。",
+          });
+          router.replace("/");
+          return true;
+        }
         setStatus({ type: "error", message: error.message });
         toast.error(error.message || "サインインに失敗しました");
         return true;
@@ -60,6 +82,31 @@ export default function AuthCallbackPage() {
       return true;
     };
 
+    const handleErrorParams = async () => {
+      const queryError = searchParams.get("error");
+      const hashError = getHashParam("error");
+      if (!queryError && !hashError) {
+        return false;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        toast.success("サインインしました", {
+          description: "メモボードに移動します。",
+        });
+        router.replace("/");
+        return true;
+      }
+
+      const message =
+        searchParams.get("error_description") ??
+        getHashParam("error_description") ??
+        "サインインに失敗しました。メールのリンクを再度試してください。";
+      setStatus({ type: "error", message });
+      toast.error(message);
+      return true;
+    };
+
     const finalize = async () => {
       try {
         const handledByHash = await finishWithTokens();
@@ -68,6 +115,10 @@ export default function AuthCallbackPage() {
         }
         const handledByCode = await finishWithCode();
         if (handledByCode) {
+          return;
+        }
+        const handledByError = await handleErrorParams();
+        if (handledByError) {
           return;
         }
         const message =
