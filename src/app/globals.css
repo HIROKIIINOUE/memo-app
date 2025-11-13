@@ -200,6 +200,52 @@ button {
   background: var(--glow-1);
 }
 
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  margin: 1.25rem 0 0.75rem;
+  font-weight: 600;
+  color: var(--text-inverse);
+}
+
+.markdown-preview p {
+  margin: 0.75rem 0;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin: 0.75rem 0 0.75rem 1.4rem;
+  padding: 0;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.3rem;
+}
+
+.markdown-preview code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-mono, "SF Mono"), monospace;
+  font-size: 0.9em;
+}
+
+.markdown-preview pre {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  overflow-x: auto;
+}
+
+.markdown-preview pre code {
+  padding: 0;
+  background: transparent;
+}
+
 .glow-blob.glow-2 {
   background: var(--glow-2);
 }
