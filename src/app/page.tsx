@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { MemoWorkspace } from "./components/MemoWorkspace";
 
 const highlights = [
   {
@@ -159,7 +158,6 @@ function MarketingExperience() {
         ))}
       </section>
 
-      <MemoWorkspace canUseWorkspace={false} />
     </div>
   );
 }
@@ -178,7 +176,10 @@ function AuthenticatedExperience({ email }: { email: string }) {
             <Link href="/memo/new" className="btn-shimmer theme-btn-primary rounded-full px-6 py-3 text-sm font-semibold">
               新しいメモ
             </Link>
-            <Link href="/memo/search" className="btn-shimmer theme-btn-secondary rounded-full border px-6 py-3 text-sm font-semibold">
+            <Link href="/memo" className="btn-shimmer theme-btn-secondary rounded-full border px-6 py-3 text-sm font-semibold">
+              メモ一覧
+            </Link>
+            <Link href="/memo/search" className="btn-shimmer theme-btn-ghost rounded-full border px-6 py-3 text-sm font-semibold">
               メモを検索
             </Link>
           </div>
@@ -194,8 +195,6 @@ function AuthenticatedExperience({ email }: { email: string }) {
           </div>
         ))}
       </section>
-
-      <MemoWorkspace canUseWorkspace />
 
       <section className="grid gap-6 lg:grid-cols-3">
         {highlights.map((item) => (

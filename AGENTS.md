@@ -45,3 +45,9 @@ After every code change, run `npm run typecheck` and `npm run lint` locally befo
 
 ## Commit & Pull Request Guidelines
 Write commits in imperative mood with focused scope (`Add memo editor`, `Fix theme toggle`), referencing related issues in the body when applicable. Pull requests should include: a concise summary, testing evidence (`npm run build`, screenshots or GIFs for UI), linked tasks, and rollout notes for any config or data changes. Request review once lint/build/test steps pass and call out follow-up work or known limitations in the PR description.
+
+## メモ機能の現状
+- `/memo/new` で Supabase/Prisma にメモを保存でき、`CreateMemoForm` は `ReactMarkdown + remark-gfm` によるライブプレビューを共通コンポーネント `MarkdownRenderer`/`memoMarkdownComponents` で共有しています。
+- `/memo` はサーバーコンポーネントで `getMemos()` を呼び出し、カード状にタイトル・更新時刻・本文冒頭を一覧表示（クリックで `/memo/[id]` に遷移）します。
+- `/memo/[id]` は `getMemoById()` を利用し、存在しない ID は `notFound` でガード済み。本文は Markdown レンダリングで Notion 風に表示します。
+- いずれの変更後も `npm run typecheck` と `npm run lint` の実行結果を最終レスポンスに記載すること。

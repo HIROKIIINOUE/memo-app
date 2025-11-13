@@ -53,6 +53,13 @@ export function Header() {
         })}
       </nav>
       <div className="flex items-center gap-3">
+        <Link
+          href="/memo"
+          className="btn-shimmer theme-btn-primary hidden rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary shadow-sm transition hover:translate-y-0.5 md:inline-flex"
+          aria-label="メモ一覧"
+        >
+          メモ一覧
+        </Link>
         <button className={`${circleButtonBase} h-10 w-10`}>
           ⌘K
         </button>

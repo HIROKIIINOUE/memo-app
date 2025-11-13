@@ -35,3 +35,29 @@ export async function createMemo(input: MemoInput) {
     },
   });
 }
+
+export async function getMemos() {
+  return prisma.memo.findMany({
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+}
+
+export async function getMemoById(id: string) {
+  return prisma.memo.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+}
