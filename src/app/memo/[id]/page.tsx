@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MarkdownRenderer } from "@/app/components/MarkdownRenderer";
+import { deleteMemoAction } from "./actions";
 import { getMemoById } from "@/lib/memos";
 
 type MemoDetailPageProps = {
@@ -37,12 +38,23 @@ export default async function MemoDetailPage({ params }: MemoDetailPageProps) {
         >
           ← メモ一覧に戻る
         </Link>
-        <Link
-          href="/memo/new"
-          className="btn-shimmer theme-btn-primary rounded-full px-5 py-2 text-sm font-semibold"
-        >
-          新しいメモを作成
-        </Link>
+        <div className="flex w-full max-w-xs flex-col gap-3 sm:w-auto">
+          <Link
+            href={`/memo/${memo.id}/edit`}
+            className="btn-shimmer theme-btn-primary rounded-full px-5 py-2 text-sm font-semibold text-center"
+          >
+            このメモを編集
+          </Link>
+          <form action={deleteMemoAction}>
+            <input type="hidden" name="memoId" value={memo.id} />
+            <button
+              type="submit"
+              className="w-full rounded-full bg-gradient-to-r from-rose-500 via-rose-600 to-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_15px_45px_rgba(225,29,72,0.35)] transition hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-200"
+            >
+              メモを削除
+            </button>
+          </form>
+        </div>
       </div>
 
       <header className="space-y-4">

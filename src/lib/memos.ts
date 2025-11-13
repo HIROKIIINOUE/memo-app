@@ -6,6 +6,10 @@ export type MemoInput = {
   content?: string | null;
 };
 
+export type MemoUpdateInput = MemoInput & {
+  id: string;
+};
+
 export function validateMemoInput(input: MemoInput) {
   const title = input.title?.trim();
   if (!title) {
@@ -36,6 +40,18 @@ export async function createMemo(input: MemoInput) {
   });
 }
 
+export async function updateMemo(input: MemoUpdateInput) {
+  const payload = validateMemoInput(input);
+
+  return prisma.memo.update({
+    where: { id: input.id },
+    data: {
+      title: payload.title,
+      content: payload.content || null,
+    },
+  });
+}
+
 export async function getMemos() {
   return prisma.memo.findMany({
     orderBy: { updatedAt: "desc" },
@@ -59,5 +75,15 @@ export async function getMemoById(id: string) {
       createdAt: true,
       updatedAt: true,
     },
+  });
+}
+
+export async function deleteMemo(id: string) {
+  if (!id?.trim()) {
+    throw new Error("メモIDが指定されていません");
+  }
+
+  return prisma.memo.delete({
+    where: { id },
   });
 }

@@ -1,35 +1,78 @@
-import { describe, expect, it } from "@jest/globals";
-import { validateMemoInput } from "../memos";
+import { deleteMemo, updateMemo } from "@/lib/memos";
+import { prisma } from "@/lib/prisma";
 
-describe("validateMemoInput", () => {
-  it("トリム済みのデータを返す", () => {
-    const payload = validateMemoInput({
-      title: "  新しいメモ ",
-      content: "  # Hello \n",
+jest.mock("@/lib/prisma", () => ({
+  prisma: {
+    memo: {
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  },
+}));
+
+const mockedPrisma = prisma as unknown as {
+  memo: { update: jest.Mock; delete: jest.Mock };
+};
+
+describe("updateMemo", () => {
+  beforeEach(() => {
+    mockedPrisma.memo.update.mockReset();
+  });
+
+  it("trims inputs and updates the memo", async () => {
+    const updated = {
+      id: "memo-1",
+      title: "Hello",
+      content: "Body",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    mockedPrisma.memo.update.mockResolvedValue(updated);
+
+    await updateMemo({
+      id: "memo-1",
+      title: "  Hello  ",
+      content: "  Body  ",
     });
 
-    expect(payload).toEqual({
-      title: "新しいメモ",
-      content: "# Hello",
+    expect(mockedPrisma.memo.update).toHaveBeenCalledWith({
+      where: { id: "memo-1" },
+      data: {
+        title: "Hello",
+        content: "Body",
+      },
     });
   });
 
-  it("タイトルが空ならエラーになる", () => {
-    expect(() =>
-      validateMemoInput({
+  it("throws when title is missing", async () => {
+    await expect(
+      updateMemo({
+        id: "memo-1",
         title: "   ",
-        content: "",
+        content: "something",
       }),
-    ).toThrow("タイトルは必須です");
+    ).rejects.toThrow("タイトルは必須です");
+  });
+});
+
+describe("deleteMemo", () => {
+  beforeEach(() => {
+    mockedPrisma.memo.delete.mockReset();
   });
 
-  it("タイトルが160文字を超えるとエラーになる", () => {
-    const longTitle = "a".repeat(161);
-    expect(() =>
-      validateMemoInput({
-        title: longTitle,
-        content: "",
-      }),
-    ).toThrow("タイトルは160文字以内で入力してください");
+  it("throws when id is missing", async () => {
+    await expect(deleteMemo(""))
+      .rejects.toThrow("メモIDが指定されていません");
+  });
+
+  it("removes memo by id", async () => {
+    mockedPrisma.memo.delete.mockResolvedValue({ id: "memo-1" });
+
+    await deleteMemo("memo-1");
+
+    expect(mockedPrisma.memo.delete).toHaveBeenCalledWith({
+      where: { id: "memo-1" },
+    });
   });
 });
