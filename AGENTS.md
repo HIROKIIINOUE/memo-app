@@ -27,6 +27,10 @@ Use TypeScript with the strict settings already enabled; prefer functional React
 - 画面やコンポーネントを追加/変更する際は、Apple ライクな質感を保つため必ず `documents/DESIGN_SYSTEM.md` を参照すること。
 - カラートークン・タイポグラフィ・モーションルールを更新した場合は `documents/DESIGN_SYSTEM.md` を同時に改訂し、PR で周知する。
 
+## Auth Email Templates
+- Supabase Auth の確認メール/Magic Link は `documents/EMAIL_TEMPLATES.md` の内容を最新とし、必要に応じてダッシュボードのテンプレートに反映する。
+- 文言・ブランドカラーを変更した際はテンプレートも合わせて更新し、エージェント同士で共有する。
+
 ## Database & Supabase Setup
 Provision a Supabase project, then copy the connection string from Dashboard → Settings → Database (`postgresql://postgres:<PASSWORD>@db.<project-ref>.supabase.co:5432/postgres?schema=public`). Store it as `DATABASE_URL` inside a local `.env`, alongside `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` (see `.env.example`). Run `npm run db:migrate` to create/align the `Memo` table defined in `prisma/schema.prisma`; use `npm run db:generate` whenever the schema changes. Server-side data access should use the shared `prisma` singleton (`src/lib/prisma.ts`) or `createSupabaseAdminClient()` (`src/lib/supabase.ts`)—never instantiate new clients per request. Use `GET /api/health` to verify the API can reach the database (it executes a lightweight `SELECT 1` via Prisma).
 

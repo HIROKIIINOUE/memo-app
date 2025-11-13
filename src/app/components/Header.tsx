@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { AccountActions } from "./AccountActions";
 
 const navItems = [
   { label: "ホーム", href: "/" },
   { label: "カテゴリー", href: "/categories" },
   { label: "タグ", href: "/tags" },
-  { label: "コミュニティ", href: "/community" },
 ];
 
 const circleButtonBase =
@@ -57,12 +57,7 @@ export function Header() {
           ⌘K
         </button>
         <ThemeToggle />
-        <button className="btn-shimmer theme-btn-secondary hidden rounded-full border px-4 py-2 text-sm font-semibold transition duration-300 md:inline-flex">
-          ログイン
-        </button>
-        <button className="btn-shimmer theme-btn-primary rounded-full px-5 py-2 text-sm font-semibold transition duration-300">
-          無料で始める
-        </button>
+        <AccountActions />
       </div>
     </header>
   );
