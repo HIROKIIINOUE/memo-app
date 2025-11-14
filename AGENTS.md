@@ -51,3 +51,7 @@ Write commits in imperative mood with focused scope (`Add memo editor`, `Fix the
 - `/memo` はサーバーコンポーネントで `getMemos()` を呼び出し、カード状にタイトル・更新時刻・本文冒頭を一覧表示（クリックで `/memo/[id]` に遷移）します。
 - `/memo/[id]` は `getMemoById()` を利用し、存在しない ID は `notFound` でガード済み。本文は Markdown レンダリングで Notion 風に表示します。
 - いずれの変更後も `npm run typecheck` と `npm run lint` の実行結果を最終レスポンスに記載すること。
+
+## MEMO_FEATURE_PLAN 準拠
+- メモ機能に関する新規要件定義・設計・実装を行う際は、必ず `documents/MEMO_FEATURE_PLAN.md` を参照し、ドキュメントで定義されたスコープと整合性を保つこと。
+- 仕様を更新する場合は、先に `documents/MEMO_FEATURE_PLAN.md` を改訂し、チームで合意を取ってから実装を行うこと。
