@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MemoSearchForm from "@/app/memo/MemoSearchForm";
 import { getMemos } from "@/lib/memos";
 
 const formatter = new Intl.RelativeTimeFormat("ja-JP", { numeric: "auto" });
@@ -47,8 +48,20 @@ const sanitizePreview = (content?: string | null) => {
 
 export const dynamic = "force-dynamic";
 
-export default async function MemoIndexPage() {
-  const memos = await getMemos();
+type SearchParams = {
+  q?: string | string[];
+};
+
+type MemoIndexPageProps = {
+  searchParams?: SearchParams | Promise<SearchParams | undefined>;
+};
+
+export default async function MemoIndexPage({ searchParams }: MemoIndexPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const rawQuery = resolvedSearchParams?.q;
+  const searchQuery = Array.isArray(rawQuery) ? rawQuery[0] ?? "" : rawQuery ?? "";
+  const memos = await getMemos({ searchQuery });
+  const isFiltered = Boolean(searchQuery.trim());
 
   return (
     <section className="space-y-10">
@@ -68,12 +81,26 @@ export default async function MemoIndexPage() {
             新しいメモを作成
           </Link>
         </div>
+        <div className="mt-6">
+          <MemoSearchForm initialQuery={searchQuery} />
+        </div>
       </header>
 
       {memos.length === 0 ? (
         <div className="rounded-[32px] border border-dashed border-white/15 p-12 text-center text-secondary">
-          <p className="text-lg font-medium">まだメモがありません</p>
-          <p className="mt-2 text-sm text-muted">「新しいメモを作成」から最初のノートを追加しましょう。</p>
+          {isFiltered ? (
+            <>
+              <p className="text-lg font-medium">該当するメモが見つかりませんでした</p>
+              <p className="mt-2 text-sm text-muted">
+                別のキーワードを試すか、検索条件をリセットしてください。
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-lg font-medium">まだメモがありません</p>
+              <p className="mt-2 text-sm text-muted">「新しいメモを作成」から最初のノートを追加しましょう。</p>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">

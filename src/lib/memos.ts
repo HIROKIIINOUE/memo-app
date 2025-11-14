@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { TITLE_MAX_LENGTH } from "@/lib/memoRules";
 
@@ -52,8 +53,37 @@ export async function updateMemo(input: MemoUpdateInput) {
   });
 }
 
-export async function getMemos() {
+export type GetMemosParams = {
+  searchQuery?: string;
+};
+
+export function buildMemoSearchFilter(
+  searchQuery?: string,
+): Prisma.MemoWhereInput | undefined {
+  if (!searchQuery) return undefined;
+
+  const keywords = searchQuery
+    .split(/\s+/)
+    .map((keyword) => keyword.trim())
+    .filter((keyword) => keyword.length > 0);
+
+  if (keywords.length === 0) return undefined;
+
+  return {
+    AND: keywords.map((keyword) => ({
+      OR: [
+        { title: { contains: keyword, mode: "insensitive" } },
+        { content: { contains: keyword, mode: "insensitive" } },
+      ],
+    })),
+  } satisfies Prisma.MemoWhereInput;
+}
+
+export async function getMemos(params: GetMemosParams = {}) {
+  const where = buildMemoSearchFilter(params.searchQuery);
+
   return prisma.memo.findMany({
+    where,
     orderBy: { updatedAt: "desc" },
     select: {
       id: true,

@@ -1,4 +1,4 @@
-import { deleteMemo, updateMemo } from "@/lib/memos";
+import { buildMemoSearchFilter, deleteMemo, updateMemo } from "@/lib/memos";
 import { prisma } from "@/lib/prisma";
 
 jest.mock("@/lib/prisma", () => ({
@@ -73,6 +73,50 @@ describe("deleteMemo", () => {
 
     expect(mockedPrisma.memo.delete).toHaveBeenCalledWith({
       where: { id: "memo-1" },
+    });
+  });
+});
+
+describe("buildMemoSearchFilter", () => {
+  it("returns undefined when query is empty", () => {
+    expect(buildMemoSearchFilter("")).toBeUndefined();
+    expect(buildMemoSearchFilter("   ")).toBeUndefined();
+    expect(buildMemoSearchFilter(undefined)).toBeUndefined();
+  });
+
+  it("builds AND 条件でキーワードを検索する", () => {
+    const filter = buildMemoSearchFilter("apple pen");
+
+    expect(filter).toEqual({
+      AND: [
+        {
+          OR: [
+            { title: { contains: "apple", mode: "insensitive" } },
+            { content: { contains: "apple", mode: "insensitive" } },
+          ],
+        },
+        {
+          OR: [
+            { title: { contains: "pen", mode: "insensitive" } },
+            { content: { contains: "pen", mode: "insensitive" } },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("トリム後のキーワードのみを利用する", () => {
+    const filter = buildMemoSearchFilter("  apple   \n  ");
+
+    expect(filter).toEqual({
+      AND: [
+        {
+          OR: [
+            { title: { contains: "apple", mode: "insensitive" } },
+            { content: { contains: "apple", mode: "insensitive" } },
+          ],
+        },
+      ],
     });
   });
 });
