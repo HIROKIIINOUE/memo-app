@@ -9,11 +9,7 @@ import { AccountActions } from "./AccountActions";
 const navItems = [
   { label: "ホーム", href: "/" },
   { label: "カテゴリー", href: "/categories" },
-  { label: "タグ", href: "/tags" },
 ];
-
-const circleButtonBase =
-  "btn-shimmer theme-btn-ghost inline-flex items-center justify-center rounded-full border theme-border-soft text-[10px] font-semibold uppercase tracking-[0.2em] transition duration-300";
 
 export function Header() {
   const pathname = usePathname();
@@ -60,9 +56,6 @@ export function Header() {
         >
           メモ一覧
         </Link>
-        <button className={`${circleButtonBase} h-10 w-10`}>
-          ⌘K
-        </button>
         <ThemeToggle />
         <AccountActions />
       </div>
