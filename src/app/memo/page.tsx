@@ -1,50 +1,8 @@
 import Link from "next/link";
+import MemoCategoryControls from "@/app/memo/MemoCategoryControls";
+import MemoListing from "@/app/memo/MemoListing";
 import MemoSearchForm from "@/app/memo/MemoSearchForm";
 import { getMemos } from "@/lib/memos";
-
-const formatter = new Intl.RelativeTimeFormat("ja-JP", { numeric: "auto" });
-
-const formatRelativeTime = (date: Date) => {
-  const now = Date.now();
-  const diff = date.getTime() - now;
-  const minutes = Math.round(diff / (1000 * 60));
-  if (Math.abs(minutes) < 60) {
-    return formatter.format(minutes, "minute");
-  }
-  const hours = Math.round(diff / (1000 * 60 * 60));
-  if (Math.abs(hours) < 24) {
-    return formatter.format(hours, "hour");
-  }
-  const days = Math.round(diff / (1000 * 60 * 60 * 24));
-  if (Math.abs(days) < 30) {
-    return formatter.format(days, "day");
-  }
-  const months = Math.round(days / 30);
-  if (Math.abs(months) < 12) {
-    return formatter.format(months, "month");
-  }
-  const years = Math.round(months / 12);
-  return formatter.format(years, "year");
-};
-
-const PREVIEW_CHAR_LIMIT = 220;
-
-const sanitizePreview = (content?: string | null) => {
-  if (!content) return "";
-  const stripped = content
-    .replace(/```[\s\S]*?```/g, " ")
-    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
-    .replace(/\[[^\]]*]\([^)]*\)/g, " ")
-    .replace(/[#>*_`~-]+/g, " ")
-    .replace(/\r?\n+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (stripped.length > PREVIEW_CHAR_LIMIT) {
-    return `${stripped.slice(0, PREVIEW_CHAR_LIMIT)}…`;
-  }
-  return stripped;
-};
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +19,14 @@ export default async function MemoIndexPage({ searchParams }: MemoIndexPageProps
   const rawQuery = resolvedSearchParams?.q;
   const searchQuery = Array.isArray(rawQuery) ? rawQuery[0] ?? "" : rawQuery ?? "";
   const memos = await getMemos({ searchQuery });
-  const isFiltered = Boolean(searchQuery.trim());
+  const serializedMemos = memos.map((memo) => ({
+    id: memo.id,
+    title: memo.title,
+    content: memo.content,
+    createdAt: memo.createdAt.toISOString(),
+    updatedAt: memo.updatedAt.toISOString(),
+  }));
+  const isSearchFiltered = Boolean(searchQuery.trim());
 
   return (
     <section className="space-y-10">
@@ -81,59 +46,13 @@ export default async function MemoIndexPage({ searchParams }: MemoIndexPageProps
             新しいメモを作成
           </Link>
         </div>
-        <div className="mt-6">
+        <div className="mt-6 space-y-4">
           <MemoSearchForm initialQuery={searchQuery} />
+          <MemoCategoryControls />
         </div>
       </header>
 
-      {memos.length === 0 ? (
-        <div className="rounded-[32px] border border-dashed border-white/15 p-12 text-center text-secondary">
-          {isFiltered ? (
-            <>
-              <p className="text-lg font-medium">該当するメモが見つかりませんでした</p>
-              <p className="mt-2 text-sm text-muted">
-                別のキーワードを試すか、検索条件をリセットしてください。
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-lg font-medium">まだメモがありません</p>
-              <p className="mt-2 text-sm text-muted">「新しいメモを作成」から最初のノートを追加しましょう。</p>
-            </>
-          )}
-        </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {memos.map((memo) => (
-            <Link
-              key={memo.id}
-              href={`/memo/${memo.id}`}
-              className="group block h-[320px] rounded-[28px] border theme-border-soft theme-bg-card/90 p-5 shadow-[0_25px_60px_rgba(255,255,255,0.12)] transition hover:-translate-y-1 hover:border-white/60"
-            >
-              <article className="flex h-full flex-col gap-4">
-                <header className="space-y-2">
-                  <h2 className="text-lg font-semibold text-primary transition group-hover:text-white">
-                    {memo.title}
-                  </h2>
-                  <time className="text-[11px] uppercase tracking-[0.35em] text-muted">
-                    {formatRelativeTime(memo.updatedAt)}
-                  </time>
-                </header>
-                <div className="flex-1 overflow-hidden rounded-2xl border border-white/5 bg-black/5 p-4">
-                  <p className="text-sm leading-relaxed text-secondary line-clamp-4">
-                    {sanitizePreview(memo.content) || "本文はまだ追加されていません。"}
-                  </p>
-                </div>
-                <footer className="text-[12px] font-semibold text-secondary">
-                  <span className="inline-flex items-center gap-1">
-                    詳細を開く <span aria-hidden="true">↗</span>
-                  </span>
-                </footer>
-              </article>
-            </Link>
-          ))}
-        </div>
-      )}
+      <MemoListing memos={serializedMemos} isSearchFiltered={isSearchFiltered} />
     </section>
   );
 }

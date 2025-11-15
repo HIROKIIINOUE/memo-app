@@ -13,8 +13,8 @@
 - 0 件時は UI 上で空状態メッセージを表示する。
 
 ### 2.2 メモのカテゴリ分類
-- 1 メモにつき 0〜1 個のカテゴリを紐づける。
-- カテゴリは事前に定義・管理できる（最低限：仕事／個人／アイデア）。長期的には `/settings/categories` などで CRUD を提供する設計とする。
+- 1 メモにつき 0〜4 個のカテゴリを紐づける（上限は Apple メモに近い軽量さを維持するため）。
+- カテゴリは事前に定義・管理できる（最低限：仕事／個人／アイデア）。長期的には `/categories` などで CRUD を提供し、全体で最大 6 件まで保持可能とする。
 - `/memo/new` および `/memo/[id]/edit` でカテゴリを選択でき、一覧や詳細でカテゴリラベルを表示する。
 - `/memo` 一覧ではカテゴリで絞り込める。（ドロップダウン or ピル）
 
@@ -33,27 +33,34 @@
 ### 3.1 データモデル（Prisma）
 ```prisma
 model Memo {
-  id          String      @id @default(cuid())
-  title       String      @db.VarChar(160)
-  content     String?     @db.Text
-  categoryId  String?     @db.Uuid
-  category    Category?   @relation(fields: [categoryId], references: [id])
+  id          String        @id @default(cuid())
+  title       String        @db.VarChar(160)
+  content     String?       @db.Text
+  categories  MemoCategory[]
   tags        MemoTag[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Category {
-  id      String  @id @default(uuid())
-  name    String  @unique @db.VarChar(64)
-  color   String  @db.VarChar(16) // DESIGN_SYSTEM のカラートークン参照
-  memos   Memo[]
+  id      String          @id @default(uuid())
+  name    String          @unique @db.VarChar(64)
+  color   String          @db.VarChar(16) // DESIGN_SYSTEM のカラートークン参照
+  memos   MemoCategory[]
 }
 
 model Tag {
   id      String   @id @default(uuid())
   name    String   @unique @db.VarChar(64)
   memos   MemoTag[]
+}
+
+model MemoCategory {
+  memoId String
+  categoryId String
+  memo   Memo      @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  @@id([memoId, categoryId])
 }
 
 model MemoTag {

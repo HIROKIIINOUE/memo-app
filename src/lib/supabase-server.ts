@@ -18,10 +18,19 @@ export async function createSupabaseServerClient() {
         return cookieStore.get(name)?.value;
       },
       set(name, value, options) {
-        cookieStore.set({ ...options, name, value });
+        try {
+          // Server Componentsではcookieの書き換えが禁止されているため、Server Action/Route Handler以外からの呼び出しで投げられる例外を握りつぶす
+          cookieStore.set({ ...options, name, value });
+        } catch {
+          // no-op
+        }
       },
       remove(name, options) {
-        cookieStore.delete({ ...options, name });
+        try {
+          cookieStore.delete({ ...options, name });
+        } catch {
+          // no-op
+        }
       },
     },
   });

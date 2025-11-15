@@ -31,12 +31,12 @@ export const createMemoAction: CreateMemoAction = async (_state, formData) => {
   }
 
   try {
-    await createMemo({
+    const memo = await createMemo({
       title,
       content: typeof content === "string" ? content : "",
     });
 
-    return { status: "success" };
+    return { status: "success", memoId: memo.id };
   } catch (error) {
     const message =
       error instanceof Error

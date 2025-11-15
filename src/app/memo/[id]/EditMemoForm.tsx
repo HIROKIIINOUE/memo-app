@@ -2,6 +2,7 @@
 
 import {
   useActionState,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -10,6 +11,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { memoMarkdownComponents } from "@/app/components/markdown";
 import { TITLE_MAX_LENGTH } from "@/lib/memoRules";
+import { CategoryPicker } from "@/app/memo/CategoryPicker";
+import { CATEGORIES_PER_MEMO_LIMIT } from "@/lib/mockCategories";
+import { loadMemoCategories, saveMemoCategories } from "@/lib/memoCategoryStorage";
 import {
   editMemoInitialState,
   type EditMemoAction,
@@ -28,10 +32,19 @@ type EditMemoFormProps = {
 export function EditMemoForm({ memo, action }: EditMemoFormProps) {
   const [title, setTitle] = useState(memo.title);
   const [content, setContent] = useState(memo.content ?? "");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
+    loadMemoCategories(memo.id),
+  );
   const [state, formAction] = useActionState(action, editMemoInitialState);
 
   const titleCount = useMemo(() => title.length, [title]);
   const remaining = TITLE_MAX_LENGTH - titleCount;
+
+  useEffect(() => {
+    if (state.status === "success") {
+      saveMemoCategories(memo.id, selectedCategories.slice(0, CATEGORIES_PER_MEMO_LIMIT));
+    }
+  }, [state.status, memo.id, selectedCategories]);
 
   return (
     <form
@@ -87,6 +100,14 @@ export function EditMemoForm({ memo, action }: EditMemoFormProps) {
               className="w-full rounded-2xl border bg-transparent px-4 py-3 text-base text-primary outline-none transition focus:border-white/60 focus:bg-white/5"
             />
           </label>
+
+          <div>
+            <CategoryPicker
+              selectedIds={selectedCategories}
+              onChange={setSelectedCategories}
+              helperText="現在はローカルに保存される暫定仕様です。まもなく Supabase へ同期されます。"
+            />
+          </div>
 
           <StatusMessage state={state} />
 

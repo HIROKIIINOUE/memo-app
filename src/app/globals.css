@@ -208,7 +208,7 @@ button {
 .markdown-preview h6 {
   margin: 1.25rem 0 0.75rem;
   font-weight: 600;
-  color: var(--text-inverse);
+  color: var(--text-primary);
 }
 
 .markdown-preview p {

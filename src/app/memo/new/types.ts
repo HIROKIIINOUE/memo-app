@@ -1,6 +1,6 @@
 export type CreateMemoFormState =
   | { status: "idle" }
-  | { status: "success" }
+  | { status: "success"; memoId: string }
   | { status: "error"; message: string };
 
 export type CreateMemoAction = (

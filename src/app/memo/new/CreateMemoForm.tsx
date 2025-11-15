@@ -12,6 +12,9 @@ import { useFormStatus } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { TITLE_MAX_LENGTH } from "@/lib/memoRules";
+import { CategoryPicker } from "@/app/memo/CategoryPicker";
+import { CATEGORIES_PER_MEMO_LIMIT } from "@/lib/mockCategories";
+import { saveMemoCategories } from "@/lib/memoCategoryStorage";
 import { memoMarkdownComponents } from "@/app/components/markdown";
 import {
   createMemoInitialState,
@@ -26,13 +29,16 @@ type CreateMemoFormProps = {
 export function CreateMemoForm({ action }: CreateMemoFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [state, formAction] = useActionState(action, createMemoInitialState);
   const formRef = useRef<HTMLFormElement>(null);
+  const lastSubmittedCategories = useRef<string[]>([]);
 
   const resetDraft = useEffectEvent(() => {
     formRef.current?.reset();
     setTitle("");
     setContent("");
+    setSelectedCategories([]);
   });
 
   useEffect(() => {
@@ -40,6 +46,19 @@ export function CreateMemoForm({ action }: CreateMemoFormProps) {
       resetDraft();
     }
   }, [state.status]);
+
+  useEffect(() => {
+    lastSubmittedCategories.current = selectedCategories;
+  }, [selectedCategories]);
+
+  useEffect(() => {
+    if (state.status === "success") {
+      saveMemoCategories(
+        state.memoId,
+        lastSubmittedCategories.current.slice(0, CATEGORIES_PER_MEMO_LIMIT),
+      );
+    }
+  }, [state]);
 
   const titleCount = useMemo(() => title.length, [title]);
   const remaining = TITLE_MAX_LENGTH - titleCount;
@@ -99,6 +118,15 @@ export function CreateMemoForm({ action }: CreateMemoFormProps) {
               onChange={(event) => setContent(event.target.value)}
             />
           </label>
+
+          <div>
+            <input type="hidden" name="categoryIds" value={selectedCategories.join(",")} />
+            <CategoryPicker
+              selectedIds={selectedCategories}
+              onChange={setSelectedCategories}
+              helperText="将来的に Supabase へ保存される設計です（現在は UI プロトタイプ）。"
+            />
+          </div>
 
           <StatusMessage state={state} />
 
