@@ -67,7 +67,9 @@ export function LanguageSelector({ initialLocale, labels }: LanguageSelectorProp
         onClick={() => setOpen((prev) => !prev)}
         className="inline-flex items-center gap-2 rounded-full border theme-border-soft px-3 py-2 text-xs font-semibold text-secondary transition hover:text-primary"
       >
-        <span className="hidden lg:inline text-muted">{labels.label}</span>
+        <span aria-hidden="true" className="text-sm">
+          🌐
+        </span>
         <span className="text-primary">{currentOption.short}</span>
         <span aria-hidden="true" className="text-[10px] text-muted">
           ▾
@@ -87,13 +89,12 @@ export function LanguageSelector({ initialLocale, labels }: LanguageSelectorProp
                     role="option"
                     aria-selected={isActive}
                     onClick={() => handleSelect(item.code)}
-                    className={`flex w-full items-start gap-3 px-4 py-3 text-left transition ${
+                    className={`flex w-full items-start gap-2 px-4 py-3 text-left transition-colors ${
                       isActive
                         ? "text-primary ring-2 ring-black/10 dark:ring-white/20 bg-transparent"
-                        : "text-secondary hover:bg-gray-100 hover:dark:bg-white/10"
+                        : "text-secondary hover:bg-black/5 hover:opacity-60 hover:dark:bg-white/10"
                     }`}
                   >
-                    <span className="mt-[2px] h-2.5 w-2.5 rounded-full border theme-border-soft" />
                     <span className="flex flex-col">
                       <span className="text-sm font-semibold text-primary">{item.label}</span>
                       <span className="text-[11px] text-muted">{labels[item.helperKey]}</span>
