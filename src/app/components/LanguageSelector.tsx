@@ -74,7 +74,9 @@ export function LanguageSelector({ initialLocale, labels }: LanguageSelectorProp
         </span>
       </button>
       {open ? (
-        <div className="language-dropdown absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-2xl border theme-border-soft shadow-[0_18px_55px_rgba(0,0,0,0.16)]">
+        <div
+          className="language-dropdown absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-2xl border theme-border-soft bg-white dark:bg-[#0c0d14] shadow-[0_18px_55px_rgba(0,0,0,0.16)]"
+        >
           <ul role="listbox">
             {LOCALE_OPTIONS.map((item) => {
               const isActive = item.code === locale;
@@ -86,7 +88,9 @@ export function LanguageSelector({ initialLocale, labels }: LanguageSelectorProp
                     aria-selected={isActive}
                     onClick={() => handleSelect(item.code)}
                     className={`flex w-full items-start gap-3 px-4 py-3 text-left transition ${
-                      isActive ? "bg-black/5 text-primary" : "text-secondary hover:bg-black/5"
+                      isActive
+                        ? "text-primary ring-2 ring-black/10 dark:ring-white/20 bg-transparent"
+                        : "text-secondary hover:bg-gray-100 hover:dark:bg-white/10"
                     }`}
                   >
                     <span className="mt-[2px] h-2.5 w-2.5 rounded-full border theme-border-soft" />
