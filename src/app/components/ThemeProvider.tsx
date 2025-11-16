@@ -25,8 +25,8 @@ function getPreferredTheme(): Theme {
   if (stored === "light" || stored === "dark") {
     return stored;
   }
-  const media = window.matchMedia("(prefers-color-scheme: light)");
-  return media.matches ? "light" : "dark";
+  // デフォルトはダークモード
+  return "dark";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
