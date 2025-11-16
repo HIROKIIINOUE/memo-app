@@ -10,7 +10,7 @@ import jaHome from "@/../locales/ja/home.json";
 export type Locale = "ja" | "en" | "fr";
 
 export const SUPPORTED_LOCALES: Locale[] = ["ja", "en", "fr"];
-export const DEFAULT_LOCALE: Locale = "ja";
+export const DEFAULT_LOCALE: Locale = "en";
 export const LOCALE_COOKIE_KEY = "locale";
 
 export type HomeCopy = typeof jaHome;
