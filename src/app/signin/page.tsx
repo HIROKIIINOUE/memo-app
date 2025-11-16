@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SigninForm } from "./SigninForm";
+import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "メールサインイン | Memo Atelier",
@@ -8,26 +9,26 @@ export const metadata: Metadata = {
     "メールアドレスのみで Memo Atelier にサインインできます。Magic Link を受信して、数秒でノートを再開しましょう。",
 };
 
-export default function SigninPage() {
+export default async function SigninPage() {
+  const locale = await getLocaleFromRequest();
+  const dict = getDictionary(locale).common.auth;
+
   return (
     <div className="pb-24 pt-16">
       <div className="mx-auto max-w-3xl rounded-[40px] border theme-border-soft theme-bg-card p-10 text-primary backdrop-blur-2xl">
         <div className="space-y-4 text-center">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted">Sign In</p>
-          <h1 className="text-4xl font-semibold">メールリンクで素早くサインイン</h1>
-          <p className="text-secondary">
-            登録済みのメールアドレスを入力すると、Magic Link を送信します。リンクを開くだけでサインインが完了し、ホームにリダイレクトされます。
-          </p>
+          <p className="text-xs uppercase tracking-[0.4em] text-muted">{dict.signin.badge}</p>
+          <h1 className="text-4xl font-semibold">{dict.signin.title}</h1>
+          <p className="text-secondary">{dict.signin.lead}</p>
           <p className="text-sm text-muted">
-            アカウントをまだお持ちでない場合は、
+            {dict.signin.signupPrompt}{" "}
             <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
-              こちらからサインアップ
+              {dict.signin.signupLink}
             </Link>
-            してください。
           </p>
         </div>
         <div className="mt-10">
-          <SigninForm />
+          <SigninForm dict={dict.signin} />
         </div>
       </div>
     </div>

@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "pill": "pour les makers",
+    "headline": "Concevoir la mémoire avec une touche Apple",
+    "subhead": "Ajoutez des catégories à vos notes Markdown, organisez-les avec élégance et étendez-les facilement avec Supabase.",
+    "primaryCta": "Commencer gratuitement",
+    "secondaryCta": "Se connecter",
+    "benefits": ["Prévisualisation Markdown", "Auth Supabase", "Navigation type iCloud"],
+    "unlocked": "Connectez-vous pour débloquer :",
+    "unlockedItems": ["Créer / éditer / supprimer des mémos", "Recherche plein texte & filtres", "Sync temps réel avec Supabase"]
+  },
+  "previewCard": {
+    "title": "Organisez vos souvenirs comme un concierge",
+    "tagLabel": "Aujourd'hui",
+    "tagCount": "Tags",
+    "sharedCount": "Mémos partagés"
+  },
+  "categories": {
+    "title": "Hiérarchie souple par catégories",
+    "body": "Basculez entre vue tableau et liste pour adapter la granularité des notes.",
+    "statsNote": "Affiché après connexion"
+  },
+  "highlights": [
+    {
+      "label": "Markdown",
+      "title": "Aperçu en direct",
+      "body": "Rendu instantané pour vérifier structure et style en tapant."
+    },
+    {
+      "label": "Catégories",
+      "title": "Rayonnages ordonnés",
+      "body": "Catégories superposées et tags combinés pour une recherche rapide."
+    },
+    {
+      "label": "Sync",
+      "title": "Sync immédiate Supabase",
+      "body": "Synchronisation via Prisma avec chiffrement pour collaborer sereinement."
+    }
+  ],
+  "quickStats": [
+    { "label": "Brouillons", "value": "12", "accent": "from-[#ffffff] to-[#dfe8ff]" },
+    { "label": "Catégories", "value": "6", "accent": "from-[#fdf2ff] to-[#fbe4ff]" },
+    { "label": "Tags", "value": "28", "accent": "from-[#e1fff4] to-[#f2fffb]" }
+  ],
+  "auth": {
+    "welcome": "Bon retour",
+    "headline": "Bienvenue, {{email}}",
+    "subhead": "Créez, recherchez et organisez vos tags immédiatement.",
+    "newMemo": "Nouveau mémo",
+    "list": "Liste des mémos",
+    "search": "Rechercher des mémos",
+    "realtime": "Synchronisé en temps réel"
+  },
+  "structure": {
+    "label": "Structure",
+    "title": "Hiérarchie douce tissée par les catégories",
+    "body": "Combinez les catégories selon la granularité des notes, avec bascule de vue rapide.",
+    "prompt": "Affichage mis à jour après connexion"
+  }
+}

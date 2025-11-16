@@ -5,10 +5,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { CATEGORY_LIMIT, type MockCategory } from "@/lib/mockCategories";
 import { loadStoredCategories, subscribeCategoryStorage } from "@/lib/categoryStorage";
+import type { CommonCopy } from "@/lib/i18n";
 
 type SortMode = "recent" | "category";
 
-export function MemoCategoryControls() {
+export function MemoCategoryControls({ dict }: { dict: CommonCopy["memo"] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -66,14 +67,16 @@ export function MemoCategoryControls() {
     <div className="rounded-[28px] border theme-border-soft bg-white/5 p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-muted">Categories</p>
-          <p className="text-sm text-secondary">{categories.length} / {CATEGORY_LIMIT} 使用中</p>
+          <p className="text-xs uppercase tracking-[0.35em] text-muted">{dict.categoriesLabel}</p>
+          <p className="text-sm text-secondary">
+            {dict.categoriesUsage.replace("{used}", String(categories.length)).replace("{limit}", String(CATEGORY_LIMIT))}
+          </p>
         </div>
         <Link
           href="/categories"
           className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-secondary transition hover:border-white hover:text-white"
         >
-          カテゴリーを編集
+          {dict.categoriesEdit}
         </Link>
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 p-1 text-xs font-semibold text-secondary">
           <button
@@ -82,7 +85,7 @@ export function MemoCategoryControls() {
             aria-pressed={sortMode === "recent"}
             onClick={() => changeSortMode("recent")}
           >
-            新着順
+            {dict.sortRecent}
           </button>
           <button
             type="button"
@@ -90,7 +93,7 @@ export function MemoCategoryControls() {
             aria-pressed={sortMode === "category"}
             onClick={() => changeSortMode("category")}
           >
-            カテゴリ順
+            {dict.sortCategory}
           </button>
         </div>
       </div>
@@ -101,7 +104,7 @@ export function MemoCategoryControls() {
           onClick={() => toggleCategory(undefined)}
           aria-pressed={!selectedCategoryId}
         >
-          すべて
+          {dict.filterAll}
         </button>
         {categories.map((category) => {
           const isActive = category.id === selectedCategoryId;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { MockCategory } from "@/lib/mockCategories";
+import type { CommonCopy, Locale } from "@/lib/i18n";
 import { loadStoredCategories, subscribeCategoryStorage } from "@/lib/categoryStorage";
 import { loadAllMemoCategories, subscribeMemoCategories } from "@/lib/memoCategoryStorage";
 
@@ -18,13 +19,20 @@ type SerializableMemo = {
 type MemoListingProps = {
   memos: SerializableMemo[];
   isSearchFiltered: boolean;
+  dict: CommonCopy["memo"];
+  locale: Locale;
 };
 
-const formatter = new Intl.RelativeTimeFormat("ja-JP", { numeric: "auto" });
+const formatterCache: Record<Locale, Intl.RelativeTimeFormat> = {
+  "ja": new Intl.RelativeTimeFormat("ja-JP", { numeric: "auto" }),
+  "en": new Intl.RelativeTimeFormat("en-US", { numeric: "auto" }),
+  "fr": new Intl.RelativeTimeFormat("fr-FR", { numeric: "auto" }),
+};
 
 const PREVIEW_CHAR_LIMIT = 220;
 
-function formatRelativeTime(date: Date) {
+function formatRelativeTime(date: Date, locale: Locale) {
+  const formatter = formatterCache[locale] ?? formatterCache.ja;
   const now = Date.now();
   const diff = date.getTime() - now;
   const minutes = Math.round(diff / (1000 * 60));
@@ -64,7 +72,7 @@ function sanitizePreview(content?: string | null) {
   return stripped;
 }
 
-export function MemoListing({ memos, isSearchFiltered }: MemoListingProps) {
+export function MemoListing({ memos, isSearchFiltered, dict, locale }: MemoListingProps) {
   const [categories, setCategories] = useState<MockCategory[]>(() => loadStoredCategories());
   const [memoCategoryMap, setMemoCategoryMap] = useState<Record<string, string[]>>(() => loadAllMemoCategories());
   const searchParams = useSearchParams();
@@ -116,25 +124,25 @@ export function MemoListing({ memos, isSearchFiltered }: MemoListingProps) {
         if (nameA === nameB) {
           return b.updatedAtDate.getTime() - a.updatedAtDate.getTime();
         }
-        return nameA.localeCompare(nameB, "ja");
+        return nameA.localeCompare(nameB, locale);
       });
       return next;
     }
     return next.sort((a, b) => b.updatedAtDate.getTime() - a.updatedAtDate.getTime());
-  }, [filteredMemos, sortMode]);
+  }, [filteredMemos, sortMode, locale]);
 
   if (memos.length === 0) {
     return (
       <div className="rounded-[32px] border border-dashed border-white/15 p-12 text-center text-secondary">
         {isSearchFiltered ? (
           <>
-            <p className="text-lg font-medium">該当するメモが見つかりませんでした</p>
-            <p className="mt-2 text-sm text-muted">別のキーワードを試すか検索条件をリセットしてください。</p>
+            <p className="text-lg font-medium">{dict.noSearch}</p>
+            <p className="mt-2 text-sm text-muted">{dict.noSearchHint}</p>
           </>
         ) : (
           <>
-            <p className="text-lg font-medium">まだメモがありません</p>
-            <p className="mt-2 text-sm text-muted">「新しいメモを作成」から最初のノートを追加しましょう。</p>
+            <p className="text-lg font-medium">{dict.noMemos}</p>
+            <p className="mt-2 text-sm text-muted">{dict.noMemosHint}</p>
           </>
         )}
       </div>
@@ -144,8 +152,8 @@ export function MemoListing({ memos, isSearchFiltered }: MemoListingProps) {
   if (sortedMemos.length === 0) {
     return (
       <div className="rounded-[32px] border border-dashed border-white/15 p-12 text-center text-secondary">
-        <p className="text-lg font-medium">カテゴリに一致するメモはありません</p>
-        <p className="mt-2 text-sm text-muted">別のカテゴリを選ぶか、フィルタを解除してください。</p>
+        <p className="text-lg font-medium">{dict.noCategory}</p>
+        <p className="mt-2 text-sm text-muted">{dict.noCategoryHint}</p>
       </div>
     );
   }
@@ -164,7 +172,7 @@ export function MemoListing({ memos, isSearchFiltered }: MemoListingProps) {
                 {memo.title}
               </h2>
               <time className="text-[11px] uppercase tracking-[0.35em] text-muted">
-                {formatRelativeTime(memo.updatedAtDate)}
+                {formatRelativeTime(memo.updatedAtDate, locale)}
               </time>
               <div className="flex flex-wrap gap-2">
                 {memo.categories.map((category) => (
@@ -185,12 +193,12 @@ export function MemoListing({ memos, isSearchFiltered }: MemoListingProps) {
             </header>
             <div className="flex-1 overflow-hidden rounded-2xl border border-white/5 bg-black/5 p-4">
               <p className="text-sm leading-relaxed text-secondary line-clamp-4">
-                {sanitizePreview(memo.content) || "本文はまだ追加されていません。"}
+                {sanitizePreview(memo.content) || dict.previewPlaceholder}
               </p>
             </div>
             <footer className="text-[12px] font-semibold text-secondary">
               <span className="inline-flex items-center gap-1">
-                詳細を開く <span aria-hidden="true">↗</span>
+                {dict.openDetail} <span aria-hidden="true">↗</span>
               </span>
             </footer>
           </article>

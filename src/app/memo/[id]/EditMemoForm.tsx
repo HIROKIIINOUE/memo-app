@@ -14,6 +14,7 @@ import { TITLE_MAX_LENGTH } from "@/lib/memoRules";
 import { CategoryPicker } from "@/app/memo/CategoryPicker";
 import { CATEGORIES_PER_MEMO_LIMIT } from "@/lib/mockCategories";
 import { loadMemoCategories, saveMemoCategories } from "@/lib/memoCategoryStorage";
+import type { CommonCopy } from "@/lib/i18n";
 import {
   editMemoInitialState,
   type EditMemoAction,
@@ -27,9 +28,10 @@ type EditMemoFormProps = {
     content: string | null;
   };
   action: EditMemoAction;
+  dict: CommonCopy["memo"];
 };
 
-export function EditMemoForm({ memo, action }: EditMemoFormProps) {
+export function EditMemoForm({ memo, action, dict }: EditMemoFormProps) {
   const [title, setTitle] = useState(memo.title);
   const [content, setContent] = useState(memo.content ?? "");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
@@ -59,21 +61,21 @@ export function EditMemoForm({ memo, action }: EditMemoFormProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-muted">Edit memo</p>
-              <h2 className="mt-2 text-2xl font-semibold text-primary">メモを編集</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-primary">{dict.form.sectionTitle}</h2>
             </div>
             <span className="rounded-full border px-3 py-1 text-xs text-secondary">
               Markdown + プレビュー
             </span>
           </div>
           <p className="mt-4 text-sm text-secondary">
-            タイトルと本文を更新すると、一覧と詳細プレビューが即座に刷新されます。
+            {dict.form.tip}
           </p>
         </div>
 
         <div className="space-y-5 rounded-[32px] border theme-border-soft theme-bg-card p-6">
           <label className="block space-y-2" htmlFor="edit-memo-title">
             <div className="flex items-center justify-between text-sm font-medium text-secondary">
-              <span>タイトル</span>
+              <span>{dict.form.title}</span>
               <span className={remaining < 0 ? "text-rose-400" : "text-muted"}>
                 {titleCount}/{TITLE_MAX_LENGTH}
               </span>
@@ -90,7 +92,7 @@ export function EditMemoForm({ memo, action }: EditMemoFormProps) {
           </label>
 
           <label className="block space-y-2" htmlFor="edit-memo-content">
-            <span className="text-sm font-medium text-secondary">本文（Markdown対応）</span>
+            <span className="text-sm font-medium text-secondary">{dict.form.content}</span>
             <textarea
               id="edit-memo-content"
               name="content"
@@ -105,14 +107,15 @@ export function EditMemoForm({ memo, action }: EditMemoFormProps) {
             <CategoryPicker
               selectedIds={selectedCategories}
               onChange={setSelectedCategories}
-              helperText="現在はローカルに保存される暫定仕様です。まもなく Supabase へ同期されます。"
+              helperText={dict.form.categoryHelper}
+              dict={dict.form.categoryPicker}
             />
           </div>
 
-          <StatusMessage state={state} />
+          <StatusMessage state={state} dict={dict} />
 
           <div className="flex justify-end">
-            <SubmitButton />
+            <SubmitButton dict={dict} />
           </div>
         </div>
       </div>
@@ -144,15 +147,15 @@ export function EditMemoForm({ memo, action }: EditMemoFormProps) {
   );
 }
 
-function StatusMessage({ state }: { state: EditMemoFormState }) {
-  let message = "変更内容は Supabase に保存されます。";
+function StatusMessage({ state, dict }: { state: EditMemoFormState; dict: CommonCopy["memo"] }) {
+  let message = dict.form.statusDefault;
   let tone = "text-muted";
 
   if (state.status === "success") {
-    message = "保存しました。すべてのビューを更新済みです。";
+    message = dict.form.statusSuccess;
     tone = "text-emerald-300";
   } else if (state.status === "error") {
-    message = state.message;
+    message = state.message || dict.form.statusError;
     tone = "text-rose-300";
   }
 
@@ -163,7 +166,7 @@ function StatusMessage({ state }: { state: EditMemoFormState }) {
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ dict }: { dict: CommonCopy["memo"] }) {
   const { pending } = useFormStatus();
 
   return (
@@ -172,7 +175,7 @@ function SubmitButton() {
       className="btn-shimmer theme-btn-primary rounded-full px-8 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
       disabled={pending}
     >
-      {pending ? "保存中..." : "変更を保存"}
+      {pending ? dict.form.statusSaving : dict.form.statusSave}
     </button>
   );
 }

@@ -8,16 +8,18 @@ import {
   saveStoredCategories,
   subscribeCategoryStorage,
 } from "@/lib/categoryStorage";
+import type { CommonCopy } from "@/lib/i18n";
 
 type CategoryManagerProps = {
   initialCategories: MockCategory[];
+  dict: CommonCopy["categories"];
 };
 
 type DraftCategory = Omit<MockCategory, "id">;
 
 const COLOR_PRESETS = ["#5B6DFF", "#FF8F6B", "#41C9A6", "#F2C94C", "#C084FC"];
 
-export default function CategoryManager({ initialCategories }: CategoryManagerProps) {
+export default function CategoryManager({ initialCategories, dict }: CategoryManagerProps) {
   const [categories, setCategories] = useState<MockCategory[]>(() => {
     const stored = loadStoredCategories();
     if (stored.length > 0) {
@@ -98,19 +100,21 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
       <section className="rounded-[32px] border theme-border-soft theme-bg-card p-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-muted">Current Categories</p>
+            <p className="text-xs uppercase tracking-[0.35em] text-muted">{dict.current}</p>
             <h2 className="mt-2 text-2xl font-semibold text-primary">
-              {emptyState ? "カテゴリが未作成です" : `登録済み ${categories.length} 件`}
+              {emptyState ? dict.empty : dict.registerCount.replace("{count}", String(categories.length))}
             </h2>
           </div>
           <div className="rounded-full border theme-border-soft px-4 py-2 text-sm text-secondary">
-            残り {Math.max(0, remainingSlots)} / {CATEGORY_LIMIT}
+            {dict.remaining
+              .replace("{remaining}", String(Math.max(0, remainingSlots)))
+              .replace("{limit}", String(CATEGORY_LIMIT))}
           </div>
         </header>
 
         {emptyState ? (
           <div className="mt-6 rounded-[24px] border border-dashed theme-border-soft p-8 text-center text-secondary">
-            <p>「カテゴリを追加」から最初のカテゴリーを作成できます。</p>
+            <p>{dict.emptyPrompt}</p>
           </div>
         ) : (
           <ul className="mt-6 grid gap-5 md:grid-cols-2">
@@ -162,13 +166,13 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted">
                     <span className="rounded-full border theme-border-soft px-3 py-1 uppercase tracking-[0.35em]">
-                      {category.id}
+                      {dict.idLabel}: {category.id}
                     </span>
                     <span
                       className="rounded-full border px-3 py-1 text-primary"
                       style={{ borderColor: `${category.color}55` }}
                     >
-                      {category.color}
+                      {dict.colorValue}: {category.color}
                     </span>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-3">
@@ -179,14 +183,14 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                           className="btn-shimmer theme-btn-primary rounded-full px-4 py-2 text-sm font-semibold shadow-sm"
                           onClick={saveEdit}
                         >
-                          保存
+                          {dict.save}
                         </button>
                         <button
                           type="button"
                           className="rounded-full border theme-border-soft px-4 py-2 text-sm text-secondary"
                           onClick={cancelEdit}
                         >
-                          キャンセル
+                          {dict.cancel}
                         </button>
                       </>
                     ) : (
@@ -195,7 +199,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                         className="rounded-full border theme-border-soft px-4 py-2 text-sm text-primary shadow-sm"
                         onClick={() => startEdit(category)}
                       >
-                        編集
+                        {dict.edit}
                       </button>
                     )}
                     <button
@@ -203,7 +207,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                       className="rounded-full border border-red-400/70 px-4 py-2 text-sm font-semibold text-red-600"
                       onClick={() => handleDelete(category.id)}
                     >
-                      削除
+                      {dict.delete}
                     </button>
                   </div>
                 </li>
@@ -214,22 +218,22 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
       </section>
 
       <section className="rounded-[32px] border border-dashed theme-border-soft p-8">
-        <h2 className="text-2xl font-semibold text-primary">カテゴリを追加</h2>
+        <h2 className="text-2xl font-semibold text-primary">{dict.addSection}</h2>
         <p className="mt-2 text-sm text-secondary">
-          プレースホルダー実装のため、入力内容はこのページ内でのみ保持されます。
+          {dict.addHint}
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <label className="space-y-2 text-sm text-secondary">
-            名称
+            {dict.name}
             <input
               value={createDraft.name}
               onChange={(event) => setCreateDraft((prev) => ({ ...prev, name: event.target.value }))}
               className="w-full rounded-2xl border theme-border-soft theme-bg-card px-4 py-3 text-primary shadow-sm outline-none transition focus:border-current"
-              placeholder="例: プロジェクト"
+              placeholder={dict.name}
             />
           </label>
           <label className="space-y-2 text-sm text-secondary">
-            カラー
+            {dict.color}
             <div className="flex flex-wrap gap-2">
               {COLOR_PRESETS.map((color) => {
                 const isActive = createDraft.color === color;
@@ -248,13 +252,13 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             </div>
           </label>
           <label className="md:col-span-2 space-y-2 text-sm text-secondary">
-            説明
+            {dict.description}
             <textarea
               value={createDraft.description}
               onChange={(event) => setCreateDraft((prev) => ({ ...prev, description: event.target.value }))}
               rows={3}
               className="w-full rounded-2xl border theme-border-soft theme-bg-card px-4 py-3 text-primary shadow-sm outline-none transition focus:border-current"
-              placeholder="カテゴリの用途や対象をメモ"
+              placeholder={dict.description}
             />
           </label>
         </div>
@@ -265,9 +269,9 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             disabled={isLimitReached || !createDraft.name.trim()}
             className="btn-shimmer theme-btn-primary rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
           >
-            カテゴリを追加
+            {dict.add}
           </button>
-          {isLimitReached && <p className="text-sm font-medium text-red-600">これ以上追加できません。</p>}
+          {isLimitReached && <p className="text-sm font-medium text-red-600">{dict.limitReached}</p>}
         </div>
       </section>
     </div>

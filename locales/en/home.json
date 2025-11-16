@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "pill": "for makers",
+    "headline": "Design your memory with an Apple-like feel",
+    "subhead": "Add categories to your Markdown notes, keep them beautifully organized, and expand seamlessly with Supabase.",
+    "primaryCta": "Get started free",
+    "secondaryCta": "Sign in",
+    "benefits": ["Markdown preview", "Supabase auth", "iCloud-like navigation"],
+    "unlocked": "Sign in to unlock:",
+    "unlockedItems": ["Create / edit / delete memos", "Full-text search & filters", "Realtime sync with Supabase"]
+  },
+  "previewCard": {
+    "title": "Organize your memory like a hotel concierge",
+    "tagLabel": "Today",
+    "tagCount": "Tags",
+    "sharedCount": "Shared memos"
+  },
+  "categories": {
+    "title": "Soft hierarchy of categories and tags",
+    "body": "Switch between board and list views with one tap to adapt to the grain of your notes.",
+    "statsNote": "Shown after login"
+  },
+  "highlights": [
+    {
+      "label": "Markdown",
+      "title": "Live preview",
+      "body": "Render as you type so you can trust your structure and styling."
+    },
+    {
+      "label": "Categories",
+      "title": "Tidy knowledge shelves",
+      "body": "Combine layered categories with tags to search fast, even with many notes."
+    },
+    {
+      "label": "Sync",
+      "title": "Instant Supabase sync",
+      "body": "Sync via Prisma with encryption for safe collaboration."
+    }
+  ],
+  "quickStats": [
+    { "label": "Drafts", "value": "12", "accent": "from-[#ffffff] to-[#dfe8ff]" },
+    { "label": "Categories", "value": "6", "accent": "from-[#fdf2ff] to-[#fbe4ff]" },
+    { "label": "Tags", "value": "28", "accent": "from-[#e1fff4] to-[#f2fffb]" }
+  ],
+  "auth": {
+    "welcome": "Welcome back",
+    "headline": "Welcome, {{email}}",
+    "subhead": "Create notes, search, and organize tags right away.",
+    "newMemo": "New memo",
+    "list": "Memo list",
+    "search": "Search memos",
+    "realtime": "Synced in real time"
+  },
+  "structure": {
+    "label": "Structure",
+    "title": "Gentle hierarchy woven by categories",
+    "body": "Combine categories flexibly for different note granularity, with quick view toggles.",
+    "prompt": "See the latest after login"
+  }
+}

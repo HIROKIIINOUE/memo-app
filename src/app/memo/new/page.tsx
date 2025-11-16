@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { CreateMemoForm } from "./CreateMemoForm";
 import { createMemoAction } from "./actions";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "新規メモ | Memo Atelier",
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default async function NewMemoPage() {
+  const locale = await getLocaleFromRequest();
+  const dict = getDictionary(locale).common.memo;
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { session },
@@ -25,14 +29,13 @@ export default async function NewMemoPage() {
       <div className="mx-auto max-w-6xl space-y-10">
         <header className="rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur">
           <p className="text-xs uppercase tracking-[0.4em] text-muted">Create</p>
-          <h1 className="mt-3 text-4xl font-semibold">新しいメモを描き始める</h1>
+          <h1 className="mt-3 text-4xl font-semibold">{dict.newTitle}</h1>
           <p className="mt-3 max-w-3xl text-secondary">
-            Supabase 上の Memo テーブルに即時保存され、後続の検索・分類機能にそのまま活用できます。
-            Markdown を使ってリッチな文章を構築しながら、同時に右側のプレビューで結果を確認してください。
+            {dict.newLead}
           </p>
         </header>
 
-        <CreateMemoForm action={createMemoAction} />
+        <CreateMemoForm action={createMemoAction} dict={dict} />
       </div>
     </div>
   );

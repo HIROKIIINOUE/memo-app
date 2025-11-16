@@ -6,14 +6,16 @@ import {
   loadStoredCategories,
   subscribeCategoryStorage,
 } from "@/lib/categoryStorage";
+import type { CommonCopy } from "@/lib/i18n";
 
 type CategoryPickerProps = {
   selectedIds: string[];
   onChange: (ids: string[]) => void;
   helperText?: string;
+  dict?: CommonCopy["memo"]["form"]["categoryPicker"];
 };
 
-export function CategoryPicker({ selectedIds, onChange, helperText }: CategoryPickerProps) {
+export function CategoryPicker({ selectedIds, onChange, helperText, dict }: CategoryPickerProps) {
   const [categories, setCategories] = useState<MockCategory[]>(() => loadStoredCategories());
 
   useEffect(() => {
@@ -40,13 +42,20 @@ export function CategoryPicker({ selectedIds, onChange, helperText }: CategoryPi
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm text-secondary">
         <div>
-          <p className="font-medium">カテゴリー</p>
+          <p className="font-medium">{dict?.label ?? "カテゴリー"}</p>
           <p className="text-xs text-muted">
-            メモごとに最大 {CATEGORIES_PER_MEMO_LIMIT} 件まで選択可能（全体 {categories.length} / {CATEGORY_LIMIT}）
+            {(dict?.limit ?? "メモごとに最大 {perMemo} 件まで選択可能（全体 {count} / {limit}）")
+              .replace("{perMemo}", String(CATEGORIES_PER_MEMO_LIMIT))
+              .replace("{count}", String(categories.length))
+              .replace("{limit}", String(CATEGORY_LIMIT))}
           </p>
           {helperText && <p className="mt-1 text-xs text-muted">{helperText}</p>}
         </div>
-        <div className="text-xs text-muted">{selectedIds.length} / {CATEGORIES_PER_MEMO_LIMIT}</div>
+        <div className="text-xs text-muted">
+          {(dict?.selected ?? "{selected} / {perMemo}")
+            .replace("{selected}", String(selectedIds.length))
+            .replace("{perMemo}", String(CATEGORIES_PER_MEMO_LIMIT))}
+        </div>
       </div>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => {

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
+import type { CommonCopy } from "@/lib/i18n";
 
 type Status =
   | { state: "idle" }
@@ -10,14 +11,14 @@ type Status =
   | { state: "success"; message: string }
   | { state: "error"; message: string };
 
-export function SigninForm() {
+export function SigninForm({ dict }: { dict: CommonCopy["auth"]["signin"] }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>({ state: "idle" });
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email) {
-      setStatus({ state: "error", message: "メールアドレスを入力してください" });
+      setStatus({ state: "error", message: dict.error });
       return;
     }
 
@@ -41,13 +42,13 @@ export function SigninForm() {
         return;
       }
 
-      const successMessage = "確認メールを送信しました。リンクからサインインを完了してください。";
+      const successMessage = dict.success;
       setStatus({
         state: "success",
         message: successMessage,
       });
-      toast.success("サインインリンクを送信しました", {
-        description: "メールに届いた Magic Link を開くとホームに移動します。",
+      toast.success(dict.toastTitle, {
+        description: dict.toastDesc,
       });
       setEmail("");
     } catch (err) {
@@ -64,7 +65,7 @@ export function SigninForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <label className="block space-y-2" htmlFor="signin-email">
-        <span className="text-sm font-medium text-secondary">メールアドレス</span>
+        <span className="text-sm font-medium text-secondary">{dict.field}</span>
         <input
           id="signin-email"
           type="email"
@@ -72,7 +73,7 @@ export function SigninForm() {
           autoComplete="email"
           required
           className="w-full rounded-2xl border bg-transparent px-4 py-3 text-base text-primary outline-none transition focus:border-white/60 focus:bg-white/5 focus:shadow-[0_20px_45px_rgba(15,15,35,0.45)]"
-          placeholder="you@example.com"
+          placeholder={dict.placeholder}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           disabled={status.state === "loading"}
@@ -83,7 +84,7 @@ export function SigninForm() {
         className="btn-shimmer theme-btn-primary flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
         disabled={status.state === "loading"}
       >
-        {status.state === "loading" ? "送信中..." : "サインインリンクを送る"}
+        {status.state === "loading" ? dict.loading : dict.ctaSignin}
       </button>
       <p
         className={`text-sm ${
@@ -95,7 +96,7 @@ export function SigninForm() {
         }`}
         aria-live="polite"
       >
-        {status.state === "idle" && "リンクの有効期限は 10 分です。受信トレイに届かない場合は迷惑メールも確認してください。"}
+        {status.state === "idle" && dict.idleHint}
         {status.state === "success" && status.message}
         {status.state === "error" && status.message}
       </p>

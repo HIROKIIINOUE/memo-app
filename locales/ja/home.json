@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "pill": "for makers",
+    "headline": "Appleの佇まいで、記憶をデザインする",
+    "subhead": "Markdownにカテゴリを付けて美しく整理し、Supabase でシームレスに拡張できます。",
+    "primaryCta": "無料でセットアップ",
+    "secondaryCta": "ログイン",
+    "benefits": ["Markdownプレビュー", "Supabase 認証", "iCloud風ナビゲーション"],
+    "unlocked": "ログインして次の体験を解放:",
+    "unlockedItems": ["メモ作成・編集・削除", "全文検索とフィルタ", "Supabase リアルタイム同期"]
+  },
+  "previewCard": {
+    "title": "あなたの記憶をホテルライクに整理",
+    "tagLabel": "Today",
+    "tagCount": "タグ",
+    "sharedCount": "共有メモ"
+  },
+  "categories": {
+    "title": "カテゴリーが織りなす柔らかい階層",
+    "body": "ボードとリストをワンタップで切り替え、メモの粒度に合わせて整理できます。",
+    "statsNote": "ログインすると最新値を表示"
+  },
+  "highlights": [
+    {
+      "label": "Markdown",
+      "title": "ライブプレビュー",
+      "body": "入力と同時にレンダリングされるプレイグラウンドで安心して整形。"
+    },
+    {
+      "label": "カテゴリー",
+      "title": "知識の棚を整頓",
+      "body": "階層化カテゴリーとタグの組み合わせで大量メモも高速検索。"
+    },
+    {
+      "label": "同期",
+      "title": "Supabaseと即時連携",
+      "body": "Prisma経由で暗号化しながら同期し、チームでも安全に共有。"
+    }
+  ],
+  "quickStats": [
+    { "label": "下書き", "value": "12", "accent": "from-[#ffffff] to-[#dfe8ff]" },
+    { "label": "カテゴリー", "value": "6", "accent": "from-[#fdf2ff] to-[#fbe4ff]" },
+    { "label": "タグ", "value": "28", "accent": "from-[#e1fff4] to-[#f2fffb]" }
+  ],
+  "auth": {
+    "welcome": "Welcome back",
+    "headline": "ようこそ、{{email}} さん",
+    "subhead": "メモの作成・検索・整理がすぐ使えます。今日のインスピレーションを保存しましょう。",
+    "newMemo": "新しいメモ",
+    "list": "メモ一覧",
+    "search": "メモを検索",
+    "realtime": "リアルタイムで同期中"
+  },
+  "structure": {
+    "label": "Structure",
+    "title": "カテゴリーが織りなす柔らかい階層",
+    "body": "メモの粒度に合わせてカテゴリーを組み合わせられるよう、ビューを即切替。",
+    "prompt": "ログインすると最新値を表示"
+  }
+}

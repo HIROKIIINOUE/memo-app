@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "./components/Header";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { AppToaster } from "./components/AppToaster";
+import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,13 +21,16 @@ export const metadata: Metadata = {
   description: "Appleライクな体験を追求する、Markdown対応のクラフトメモアプリ",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocaleFromRequest();
+  const dictionary = getDictionary(locale);
+
   return (
-    <html lang="ja" data-theme="dark">
+    <html lang={locale} data-theme="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-500`}
       >
@@ -38,7 +42,7 @@ export default function RootLayout({
               <div className="glow-blob glow-3 absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full" />
             </div>
             <div className="relative mx-auto w-full max-w-6xl px-6 pb-24">
-              <Header />
+              <Header locale={locale} dictionary={dictionary.common} />
               <main>{children}</main>
             </div>
           </div>

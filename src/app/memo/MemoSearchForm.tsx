@@ -2,14 +2,16 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CommonCopy } from "@/lib/i18n";
 
 type MemoSearchFormProps = {
   initialQuery?: string;
+  dict: CommonCopy["memo"];
 };
 
 const DEBOUNCE_DELAY = 300;
 
-export function MemoSearchForm({ initialQuery = "" }: MemoSearchFormProps) {
+export function MemoSearchForm({ initialQuery = "", dict }: MemoSearchFormProps) {
   const [value, setValue] = useState(initialQuery);
   const router = useRouter();
   const pathname = usePathname();
@@ -80,7 +82,7 @@ export function MemoSearchForm({ initialQuery = "" }: MemoSearchFormProps) {
   return (
     <form onSubmit={handleSubmit} className="relative w-full max-w-2xl">
       <label htmlFor="memo-search" className="sr-only">
-        メモを検索
+        {dict.searchLabel}
       </label>
       <div className="flex items-center rounded-full border theme-border-soft bg-white/5 px-5 py-3 shadow-inner shadow-white/5">
         <div className="text-sm text-muted">⌘K</div>
@@ -89,9 +91,9 @@ export function MemoSearchForm({ initialQuery = "" }: MemoSearchFormProps) {
           type="text"
           value={value}
           onChange={handleChange}
-          placeholder="本文やタイトルから検索"
+          placeholder={dict.searchPlaceholder}
           className="ml-4 flex-1 bg-transparent text-sm text-secondary placeholder:text-muted focus:outline-none"
-          aria-label="メモをキーワードで検索"
+          aria-label={dict.searchLabel}
         />
         {value && (
           <button
@@ -99,7 +101,7 @@ export function MemoSearchForm({ initialQuery = "" }: MemoSearchFormProps) {
             onClick={handleClear}
             className="rounded-full px-3 py-1 text-xs font-medium text-muted transition hover:text-white"
           >
-            クリア
+            {dict.searchClear}
           </button>
         )}
       </div>

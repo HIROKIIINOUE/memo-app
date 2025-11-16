@@ -1,0 +1,168 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
+import type { CommonCopy } from "@/lib/i18n";
+
+type CallbackStatus =
+  | { type: "loading"; message: string }
+  | { type: "error"; message: string };
+
+export default function CallbackClient({ dict }: { dict: CommonCopy["auth"]["callback"] }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [status, setStatus] = useState<CallbackStatus>({
+    type: "loading",
+    message: dict.loading,
+  });
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    const getHashParam = (key: string) => {
+      if (typeof window === "undefined") {
+        return null;
+      }
+      const hash = window.location.hash.startsWith("#")
+        ? window.location.hash.slice(1)
+        : "";
+      if (!hash) return null;
+      const params = new URLSearchParams(hash);
+      return params.get(key);
+    };
+
+    const finishWithTokens = async () => {
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      if (hash) {
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        if (accessToken && refreshToken) {
+          await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          window.history.replaceState(null, "", window.location.pathname);
+          toast.success(dict.signinSuccess, {
+            description: dict.redirect,
+          });
+          router.replace("/");
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const finishWithCode = async () => {
+      const code = searchParams.get("code");
+      if (!code) {
+        return false;
+      }
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          toast.success(dict.signinSuccess, {
+            description: dict.redirect,
+          });
+          router.replace("/");
+          return true;
+        }
+        setStatus({ type: "error", message: error.message });
+        toast.error(error.message || dict.signinError);
+        return true;
+      }
+      toast.success(dict.signinSuccess, {
+        description: dict.redirect,
+      });
+      router.replace("/");
+      return true;
+    };
+
+    const handleErrorParams = async () => {
+      const queryError = searchParams.get("error");
+      const hashError = getHashParam("error");
+      if (!queryError && !hashError) {
+        return false;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        toast.success(dict.signinSuccess, {
+          description: dict.redirect,
+        });
+        router.replace("/");
+        return true;
+      }
+
+      const message =
+        searchParams.get("error_description") ??
+        getHashParam("error_description") ??
+        dict.genericError;
+      setStatus({ type: "error", message });
+      toast.error(message);
+      return true;
+    };
+
+    const finalize = async () => {
+      try {
+        const handledByHash = await finishWithTokens();
+        if (handledByHash) {
+          return;
+        }
+        const handledByCode = await finishWithCode();
+        if (handledByCode) {
+          return;
+        }
+        const handledByError = await handleErrorParams();
+        if (handledByError) {
+          return;
+        }
+        const message = dict.genericError;
+        setStatus({
+          type: "error",
+          message,
+        });
+        toast.error(message);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : dict.genericError;
+        setStatus({
+          type: "error",
+          message,
+        });
+        toast.error(message);
+      }
+    };
+
+    void finalize();
+  }, [router, searchParams, dict]);
+
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-4 text-center text-primary">
+      {status.type === "loading" ? (
+        <>
+          <div className="h-16 w-16 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+          <p className="text-secondary">{status.message}</p>
+          <p className="text-sm text-muted">{dict.loadingNote}</p>
+        </>
+      ) : (
+        <>
+          <p className="text-lg font-semibold text-rose-200">{dict.errorTitle}</p>
+          <p className="text-secondary">{status.message}</p>
+          <button
+            type="button"
+            className="btn-shimmer theme-btn-primary rounded-full px-6 py-2 text-sm font-semibold"
+            onClick={() => router.replace("/signup")}
+          >
+            {dict.retry}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}

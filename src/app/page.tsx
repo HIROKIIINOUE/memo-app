@@ -1,31 +1,11 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-
-const highlights = [
-  {
-    label: "Markdown",
-    title: "ライブプレビュー",
-    body: "入力と同時にレンダリングされるプレイグラウンドで、構造と装飾を安心して確認できます。",
-  },
-  {
-    label: "カテゴリー",
-    title: "知識の棚を整頓",
-    body: "階層化されたカテゴリーとタグの組み合わせで、大量のメモも高速検索。",
-  },
-  {
-    label: "同期",
-    title: "Supabaseと即時連携",
-    body: "Prisma経由で暗号化しながら同期し、チームでも安全に共有。",
-  },
-];
-
-const quickStats = [
-  { label: "下書き", value: "12", accent: "from-[#ffffff] to-[#dfe8ff]" },
-  { label: "カテゴリー", value: "6", accent: "from-[#fdf2ff] to-[#fbe4ff]" },
-  { label: "タグ", value: "28", accent: "from-[#e1fff4] to-[#f2fffb]" },
-];
+import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 
 export default async function Home() {
+  const locale = await getLocaleFromRequest();
+  const dictionary = getDictionary(locale);
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { session },
@@ -33,63 +13,65 @@ export default async function Home() {
   const isAuthenticated = Boolean(session);
 
   if (!isAuthenticated) {
-    return <MarketingExperience />;
+    return <MarketingExperience dict={dictionary.home} />;
   }
 
-  return <AuthenticatedExperience email={session?.user.email ?? ""} />;
+  return <AuthenticatedExperience email={session?.user.email ?? ""} dict={dictionary.home} />;
 }
 
-function MarketingExperience() {
+type HomeDict = ReturnType<typeof getDictionary>["home"];
+
+function MarketingExperience({ dict }: { dict: HomeDict }) {
   return (
     <div className="space-y-16 pb-12 text-primary">
       <section className="grid items-center gap-12 pt-14 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-10">
           <div className="inline-flex items-center gap-2 rounded-full border theme-border-soft theme-bg-chip px-4 py-1 text-xs uppercase tracking-[0.4em] text-secondary transition-colors duration-500">
             <span>Memo Atelier</span>
-            <span className="text-muted">for makers</span>
+            <span className="text-muted">{dict.hero.pill}</span>
           </div>
           <div className="space-y-6">
             <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              Appleの佇まいで、<span className="text-secondary">記憶</span>をデザインする
+              {dict.hero.headline}
             </h1>
             <p className="max-w-xl text-lg leading-relaxed text-secondary">
-              Markdownで綴ったアイデアにカテゴリーとタグを付与し、どんな瞬間も美しく整理するメモアプリ。モダンな Supabase スタックで、認証から共同編集までシームレスに拡張できます。
+              {dict.hero.subhead}
             </p>
           </div>
           <div className="flex flex-wrap gap-4">
             <Link className="btn-shimmer theme-btn-primary rounded-full px-8 py-3 text-sm font-semibold" href="/signup">
-              無料でセットアップ
+              {dict.hero.primaryCta}
             </Link>
             <Link className="btn-shimmer theme-btn-secondary rounded-full border px-8 py-3 text-sm font-semibold" href="/signin">
-              ログイン
+              {dict.hero.secondaryCta}
             </Link>
           </div>
           <div className="flex flex-wrap gap-6 text-sm text-secondary">
-            <span>✔ Markdownプレビュー</span>
-            <span>✔ Supabase 認証</span>
-            <span>✔ iCloud風ナビゲーション</span>
+            {dict.hero.benefits.map((item) => (
+              <span key={item}>✔ {item}</span>
+            ))}
           </div>
           <div className="rounded-3xl border theme-border-soft theme-bg-card/80 p-6 text-sm text-secondary backdrop-blur">
-            <p className="font-semibold text-primary">ログインして次の体験を解放:</p>
+            <p className="font-semibold text-primary">{dict.hero.unlocked}</p>
             <ul className="mt-3 space-y-2 text-muted">
-              <li>・メモ作成・編集・削除</li>
-              <li>・全文検索とカテゴリー/タグ別フィルタ</li>
-              <li>・Supabaseとのリアルタイム同期</li>
+              {dict.hero.unlockedItems.map((item) => (
+                <li key={item}>・{item}</li>
+              ))}
             </ul>
           </div>
         </div>
         <div className="relative lg:flex lg:items-start lg:gap-10">
           <div className="hidden lg:block opacity-60">
             <div className="rounded-[34px] border theme-border-soft theme-bg-accent p-6 text-inverse backdrop-blur-2xl">
-              <p className="text-inverse text-xs uppercase tracking-[0.3em] opacity-70">Today</p>
-              <p className="mt-4 text-2xl font-semibold">あなたの記憶をホテルライクに整理</p>
+              <p className="text-inverse text-xs uppercase tracking-[0.3em] opacity-70">{dict.previewCard.tagLabel}</p>
+              <p className="mt-4 text-2xl font-semibold">{dict.previewCard.title}</p>
               <div className="mt-6 space-y-3 text-sm text-inverse opacity-80">
                 <div className="flex items-center justify-between">
-                  <span>タグ</span>
+                  <span>{dict.previewCard.tagCount}</span>
                   <span className="font-semibold">28</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>共有メモ</span>
+                  <span>{dict.previewCard.sharedCount}</span>
                   <span className="font-semibold">4</span>
                 </div>
               </div>
@@ -130,74 +112,71 @@ function MarketingExperience() {
       <section className="grid gap-6 rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur-2xl lg:grid-cols-5">
         <div className="space-y-4 lg:col-span-2">
           <p className="text-xs uppercase tracking-[0.4em] text-muted">Structure</p>
-          <h2 className="text-2xl font-semibold">カテゴリーとタグが織りなす柔らかい階層</h2>
-          <p className="text-sm leading-relaxed text-secondary">
-            メモの粒度に合わせてカテゴリーとタグを柔軟に組み合わせられるよう、ボードビューとリストビューをワンタップで切り替えられるコンポーネントを提供します。
-          </p>
+          <h2 className="text-2xl font-semibold">{dict.categories.title}</h2>
+          <p className="text-sm leading-relaxed text-secondary">{dict.categories.body}</p>
         </div>
         <div className="grid gap-4 lg:col-span-3 lg:grid-cols-3">
-          {quickStats.map((stat) => (
+          {dict.quickStats.map((stat) => (
             <div key={stat.label} className="rounded-3xl border theme-border-soft theme-bg-card p-4 text-center">
               <div className={`mx-auto mb-4 h-16 w-16 rounded-2xl bg-gradient-to-br ${stat.accent}`} />
               <p className="text-4xl font-semibold">—</p>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">{stat.label}</p>
-              <p className="mt-2 text-xs text-muted">ログインすると最新値を表示</p>
+              <p className="mt-2 text-xs text-muted">{dict.categories.statsNote}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        {highlights.map((item) => (
+        {dict.highlights.map((item) => (
           <div key={item.title} className="rounded-[28px] border theme-border-soft theme-bg-card p-6 backdrop-blur-2xl">
             <p className="text-xs uppercase tracking-[0.4em] text-muted">{item.label}</p>
             <h3 className="mt-4 text-2xl font-semibold">{item.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-secondary">{item.body}</p>
-            <p className="mt-4 text-xs text-muted">ログインして実際のボードで体験する</p>
+            <p className="mt-4 text-xs text-muted">{dict.categories.statsNote}</p>
           </div>
         ))}
       </section>
-
     </div>
   );
 }
 
-function AuthenticatedExperience({ email }: { email: string }) {
+function AuthenticatedExperience({ email, dict }: { email: string; dict: HomeDict }) {
   return (
     <div className="space-y-10 pb-12 text-primary">
       <section className="rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur-2xl">
-        <p className="text-xs uppercase tracking-[0.4em] text-muted">Welcome back</p>
+        <p className="text-xs uppercase tracking-[0.4em] text-muted">{dict.auth.welcome}</p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-semibold">ようこそ、{email} さん</h1>
-            <p className="mt-2 text-secondary">メモの作成・検索・タグ整理がすぐに利用できます。今日のインスピレーションを保存しましょう。</p>
+            <h1 className="text-4xl font-semibold">{dict.auth.headline.replace("{{email}}", email)}</h1>
+            <p className="mt-2 text-secondary">{dict.auth.subhead}</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link href="/memo/new" className="btn-shimmer theme-btn-primary rounded-full px-6 py-3 text-sm font-semibold">
-              新しいメモ
+              {dict.auth.newMemo}
             </Link>
             <Link href="/memo" className="btn-shimmer theme-btn-secondary rounded-full border px-6 py-3 text-sm font-semibold">
-              メモ一覧
+              {dict.auth.list}
             </Link>
             <Link href="/memo/search" className="btn-shimmer theme-btn-ghost rounded-full border px-6 py-3 text-sm font-semibold">
-              メモを検索
+              {dict.auth.search}
             </Link>
           </div>
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
-        {quickStats.map((stat) => (
+        {dict.quickStats.map((stat) => (
           <div key={stat.label} className="rounded-3xl border theme-border-soft theme-bg-card p-5">
             <p className="text-xs uppercase tracking-[0.4em] text-muted">{stat.label}</p>
             <p className="mt-4 text-4xl font-semibold">{stat.value}</p>
-            <p className="text-sm text-muted">リアルタイムで同期中</p>
+            <p className="text-sm text-muted">{dict.auth.realtime}</p>
           </div>
         ))}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        {highlights.map((item) => (
+        {dict.highlights.map((item) => (
           <div key={item.title} className="rounded-[28px] border theme-border-soft theme-bg-card p-6 backdrop-blur-2xl">
             <p className="text-xs uppercase tracking-[0.4em] text-muted">{item.label}</p>
             <h3 className="mt-4 text-2xl font-semibold">{item.title}</h3>
