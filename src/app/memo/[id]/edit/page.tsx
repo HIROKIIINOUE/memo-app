@@ -38,7 +38,7 @@ export default async function MemoEditPage({ params }: MemoEditPageProps) {
   }
 
   return (
-    <section className="space-y-8 rounded-[32px] border theme-border-soft theme-bg-card p-8">
+    <section className="space-y-8 rounded-[32px] border theme-border-soft theme-bg-card p-5 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link
           href={`/memo/${memo.id}`}
@@ -56,8 +56,8 @@ export default async function MemoEditPage({ params }: MemoEditPageProps) {
 
       <header className="space-y-2">
         <p className="text-xs uppercase tracking-[0.4em] text-muted">Edit Memo</p>
-        <h1 className="text-4xl font-semibold text-primary">{dict.editTitle}</h1>
-        <p className="text-sm text-secondary">{dict.editLead}</p>
+        <h1 className="text-3xl font-semibold text-primary sm:text-4xl break-words">{dict.editTitle}</h1>
+        <p className="text-sm text-secondary leading-relaxed break-words">{dict.editLead}</p>
       </header>
 
       <EditMemoForm memo={memo} action={updateMemoAction} dict={dict} />

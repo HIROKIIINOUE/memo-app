@@ -84,8 +84,7 @@ export function MemoSearchForm({ initialQuery = "", dict }: MemoSearchFormProps)
       <label htmlFor="memo-search" className="sr-only">
         {dict.searchLabel}
       </label>
-      <div className="flex items-center rounded-full border theme-border-soft bg-white/5 px-5 py-3 shadow-inner shadow-white/5">
-        <div className="text-sm text-muted">⌘K</div>
+      <div className="flex items-center overflow-hidden rounded-full border theme-border-soft bg-white/5 px-5 py-3 shadow-inner shadow-white/5">
         <input
           id="memo-search"
           type="text"
@@ -93,6 +92,7 @@ export function MemoSearchForm({ initialQuery = "", dict }: MemoSearchFormProps)
           onChange={handleChange}
           placeholder={dict.searchPlaceholder}
           className="ml-4 flex-1 bg-transparent text-sm text-secondary placeholder:text-muted focus:outline-none"
+          style={{ minWidth: 0 }}
           aria-label={dict.searchLabel}
         />
         {value && (

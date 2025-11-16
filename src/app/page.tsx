@@ -67,14 +67,22 @@ function MarketingExperience({ dict }: { dict: HomeDict }) {
 }
 
 function AuthenticatedExperience({ email, dict }: { email: string; dict: HomeDict }) {
+  const [headlinePrefix, headlineSuffix] = dict.auth.headline.split("{{email}}");
+
   return (
     <div className="space-y-10 pb-6 text-primary">
       <section className="rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur-2xl">
         <p className="text-xs uppercase tracking-[0.4em] text-muted">{dict.auth.welcome}</p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-semibold">{dict.auth.headline.replace("{{email}}", email)}</h1>
-            <p className="mt-2 text-secondary">{dict.auth.subhead}</p>
+            <h1 className="text-2xl font-semibold sm:text-4xl lg:text-5xl">
+              <span className="break-words">{headlinePrefix}</span>
+              <span className="break-all">{email}</span>
+              <span className="break-words">{headlineSuffix}</span>
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-secondary sm:text-base break-words">
+              {dict.auth.subhead}
+            </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link href="/memo/new" className="btn-shimmer theme-btn-primary rounded-full px-6 py-3 text-sm font-semibold">

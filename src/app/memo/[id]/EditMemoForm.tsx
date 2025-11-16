@@ -51,31 +51,31 @@ export function EditMemoForm({ memo, action, dict }: EditMemoFormProps) {
   return (
     <form
       action={formAction}
-      className="grid gap-8 lg:grid-cols-2"
+      className="grid gap-6 lg:grid-cols-2"
       noValidate
     >
       <input type="hidden" name="memoId" value={memo.id} />
 
       <div className="space-y-6">
-        <div className="rounded-[32px] border theme-border-soft theme-bg-card p-6">
-          <div className="flex items-center justify-between">
-            <div>
+        <div className="rounded-[32px] border theme-border-soft theme-bg-card p-5 sm:p-6">
+          <div className="flex min-w-0 items-center justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-xs uppercase tracking-[0.4em] text-muted">Edit memo</p>
-              <h2 className="mt-2 text-2xl font-semibold text-primary">{dict.form.sectionTitle}</h2>
+              <h2 className="mt-2 text-xl font-semibold text-primary break-words sm:text-2xl">{dict.form.sectionTitle}</h2>
             </div>
             <span className="rounded-full border px-3 py-1 text-xs text-secondary">
               Markdown + プレビュー
             </span>
           </div>
-          <p className="mt-4 text-sm text-secondary">
+          <p className="mt-4 text-sm text-secondary leading-relaxed break-words">
             {dict.form.tip}
           </p>
         </div>
 
-        <div className="space-y-5 rounded-[32px] border theme-border-soft theme-bg-card p-6">
+        <div className="space-y-5 rounded-[32px] border theme-border-soft theme-bg-card p-5 sm:p-6">
           <label className="block space-y-2" htmlFor="edit-memo-title">
             <div className="flex items-center justify-between text-sm font-medium text-secondary">
-              <span>{dict.form.title}</span>
+              <span className="truncate">{dict.form.title}</span>
               <span className={remaining < 0 ? "text-rose-400" : "text-muted"}>
                 {titleCount}/{TITLE_MAX_LENGTH}
               </span>
@@ -120,13 +120,13 @@ export function EditMemoForm({ memo, action, dict }: EditMemoFormProps) {
         </div>
       </div>
 
-      <div className="space-y-4 rounded-[32px] border theme-border-soft theme-bg-card/60 p-6 backdrop-blur">
+      <div className="space-y-4 rounded-[32px] border theme-border-soft theme-bg-card/60 p-5 sm:p-6 backdrop-blur">
         <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.4em] text-muted">
           <span>Preview</span>
           <span>Live Markdown</span>
         </div>
         <div className="rounded-3xl border theme-border-soft bg-black/20 p-5 text-primary">
-          <p className="text-xl font-semibold text-primary">
+          <p className="text-xl font-semibold text-primary break-words">
             {title.trim() || "タイトルのプレビュー"}
           </p>
           <div className="markdown-preview mt-4 rounded-2xl border border-white/5 bg-black/10 p-4 text-sm leading-relaxed text-secondary">
