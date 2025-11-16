@@ -1,13 +1,13 @@
 {
   "hero": {
     "pill": "for makers",
-    "headline": "Design your memory with an Apple-like feel",
-    "subhead": "Add categories to your Markdown notes, keep them beautifully organized, and expand seamlessly with Supabase.",
-    "primaryCta": "Get started free",
+    "headline": "Design your memory and creativity",
+    "subhead": "Write in Markdown, keep notes tidy with categories, and pick up anywhere.",
+    "primaryCta": "Start for free",
     "secondaryCta": "Sign in",
-    "benefits": ["Markdown preview", "Supabase auth", "iCloud-like navigation"],
+    "benefits": ["Markdown preview", "Easy categories", "Safe sync"],
     "unlocked": "Sign in to unlock:",
-    "unlockedItems": ["Create / edit / delete memos", "Full-text search & filters", "Realtime sync with Supabase"]
+    "unlockedItems": ["Create / edit / delete memos", "Full-text search & filters", "Same content on every device"]
   },
   "previewCard": {
     "title": "Organize your memory like a hotel concierge",

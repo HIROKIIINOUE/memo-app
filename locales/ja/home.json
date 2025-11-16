@@ -1,13 +1,13 @@
 {
   "hero": {
     "pill": "for makers",
-    "headline": "Appleの佇まいで、記憶をデザインする",
-    "subhead": "Markdownにカテゴリを付けて美しく整理し、Supabase でシームレスに拡張できます。",
-    "primaryCta": "無料でセットアップ",
+    "headline": "あなたの記憶とクリエイティビティをデザインする",
+    "subhead": "Markdownで書いたメモをすっきり整理し、どの端末からでも続きが書けます。",
+    "primaryCta": "無料で始める",
     "secondaryCta": "ログイン",
-    "benefits": ["Markdownプレビュー", "Supabase 認証", "iCloud風ナビゲーション"],
+    "benefits": ["Markdownプレビュー", "カテゴリ整理", "安全な同期"],
     "unlocked": "ログインして次の体験を解放:",
-    "unlockedItems": ["メモ作成・編集・削除", "全文検索とフィルタ", "Supabase リアルタイム同期"]
+    "unlockedItems": ["メモ作成・編集・削除", "全文検索とフィルタ", "どの端末からでも同じ内容を表示"]
   },
   "previewCard": {
     "title": "あなたの記憶をホテルライクに整理",

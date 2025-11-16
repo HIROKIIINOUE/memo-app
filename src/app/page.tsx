@@ -23,10 +23,10 @@ type HomeDict = ReturnType<typeof getDictionary>["home"];
 
 function MarketingExperience({ dict }: { dict: HomeDict }) {
   return (
-    <div className="space-y-16 pb-12 text-primary">
-      <section className="grid items-center gap-12 pt-14 lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="space-y-16 pb-6 text-primary">
+      <section className="grid items-center justify-center gap-12 pt-14 text-center">
         <div className="space-y-10">
-          <div className="inline-flex items-center gap-2 rounded-full border theme-border-soft theme-bg-chip px-4 py-1 text-xs uppercase tracking-[0.4em] text-secondary transition-colors duration-500">
+          <div className="inline-flex items-center justify-center gap-2 rounded-full border theme-border-soft theme-bg-chip px-4 py-1 text-xs uppercase tracking-[0.4em] text-secondary transition-colors duration-500">
             <span>Memo Atelier</span>
             <span className="text-muted">{dict.hero.pill}</span>
           </div>
@@ -34,11 +34,11 @@ function MarketingExperience({ dict }: { dict: HomeDict }) {
             <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
               {dict.hero.headline}
             </h1>
-            <p className="max-w-xl text-lg leading-relaxed text-secondary">
+            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-secondary">
               {dict.hero.subhead}
             </p>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Link className="btn-shimmer theme-btn-primary rounded-full px-8 py-3 text-sm font-semibold" href="/signup">
               {dict.hero.primaryCta}
             </Link>
@@ -46,7 +46,7 @@ function MarketingExperience({ dict }: { dict: HomeDict }) {
               {dict.hero.secondaryCta}
             </Link>
           </div>
-          <div className="flex flex-wrap gap-6 text-sm text-secondary">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-secondary">
             {dict.hero.benefits.map((item) => (
               <span key={item}>✔ {item}</span>
             ))}
@@ -60,82 +60,7 @@ function MarketingExperience({ dict }: { dict: HomeDict }) {
             </ul>
           </div>
         </div>
-        <div className="relative lg:flex lg:items-start lg:gap-10">
-          <div className="hidden lg:block opacity-60">
-            <div className="rounded-[34px] border theme-border-soft theme-bg-accent p-6 text-inverse backdrop-blur-2xl">
-              <p className="text-inverse text-xs uppercase tracking-[0.3em] opacity-70">{dict.previewCard.tagLabel}</p>
-              <p className="mt-4 text-2xl font-semibold">{dict.previewCard.title}</p>
-              <div className="mt-6 space-y-3 text-sm text-inverse opacity-80">
-                <div className="flex items-center justify-between">
-                  <span>{dict.previewCard.tagCount}</span>
-                  <span className="font-semibold">28</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>{dict.previewCard.sharedCount}</span>
-                  <span className="font-semibold">4</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="relative mt-8 w-full rounded-[40px] border theme-border-soft theme-bg-card p-8 backdrop-blur-3xl lg:mt-0">
-            <div className="rounded-3xl border theme-border-soft theme-bg-accent p-6 shadow-[0_40px_120px_rgba(0,0,0,0.25)]">
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-4 text-inverse">
-                <div>
-                  <p className="text-inverse text-xs uppercase tracking-[0.3em] opacity-70">Draft · Markdown</p>
-                  <p className="text-2xl font-semibold">Vision OS リサーチ</p>
-                </div>
-                <span className="rounded-full border border-white/30 px-4 py-1 text-xs">#design</span>
-              </div>
-              <div className="space-y-4 rounded-2xl border border-white/10 bg-white/10 p-4 text-sm text-inverse opacity-80">
-                <p className="text-inverse font-mono text-xs uppercase tracking-[0.4em] opacity-60">PREVIEW</p>
-                <div className="space-y-2 rounded-2xl bg-black/30 p-4 text-left">
-                  <p className="text-lg font-semibold">## Spatial メモ</p>
-                  <p className="text-inverse opacity-80">
-                    - Apple Pencil でタグをドラッグ
-                    <br />- Markdown と手書きの共存
-                    <br />- メモの区切りはモーフィングで表示
-                  </p>
-                </div>
-                <p className="text-inverse text-xs opacity-60">⌘ + Shift + K でタグ付け</p>
-              </div>
-            </div>
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[40px] bg-gradient-to-br from-[#030305]/60 via-[#0c0d14]/50 to-transparent text-center text-inverse">
-              <div className="pointer-events-auto rounded-2xl border border-white/20 bg-black/40 px-6 py-4 text-sm backdrop-blur">
-                <p className="font-semibold">ログインすると、このワークスペースでメモを編集できます。</p>
-                <p className="text-xs text-white/70">ダッシュボード機能は会員限定です。</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-6 rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur-2xl lg:grid-cols-5">
-        <div className="space-y-4 lg:col-span-2">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted">Structure</p>
-          <h2 className="text-2xl font-semibold">{dict.categories.title}</h2>
-          <p className="text-sm leading-relaxed text-secondary">{dict.categories.body}</p>
-        </div>
-        <div className="grid gap-4 lg:col-span-3 lg:grid-cols-3">
-          {dict.quickStats.map((stat) => (
-            <div key={stat.label} className="rounded-3xl border theme-border-soft theme-bg-card p-4 text-center">
-              <div className={`mx-auto mb-4 h-16 w-16 rounded-2xl bg-gradient-to-br ${stat.accent}`} />
-              <p className="text-4xl font-semibold">—</p>
-              <p className="text-xs uppercase tracking-[0.3em] text-muted">{stat.label}</p>
-              <p className="mt-2 text-xs text-muted">{dict.categories.statsNote}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-3">
-        {dict.highlights.map((item) => (
-          <div key={item.title} className="rounded-[28px] border theme-border-soft theme-bg-card p-6 backdrop-blur-2xl">
-            <p className="text-xs uppercase tracking-[0.4em] text-muted">{item.label}</p>
-            <h3 className="mt-4 text-2xl font-semibold">{item.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-secondary">{item.body}</p>
-            <p className="mt-4 text-xs text-muted">{dict.categories.statsNote}</p>
-          </div>
-        ))}
+        <div className="relative lg:flex lg:items-start lg:gap-10" />
       </section>
     </div>
   );
@@ -143,7 +68,7 @@ function MarketingExperience({ dict }: { dict: HomeDict }) {
 
 function AuthenticatedExperience({ email, dict }: { email: string; dict: HomeDict }) {
   return (
-    <div className="space-y-10 pb-12 text-primary">
+    <div className="space-y-10 pb-6 text-primary">
       <section className="rounded-[32px] border theme-border-soft theme-bg-card p-8 backdrop-blur-2xl">
         <p className="text-xs uppercase tracking-[0.4em] text-muted">{dict.auth.welcome}</p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
@@ -163,26 +88,6 @@ function AuthenticatedExperience({ email, dict }: { email: string; dict: HomeDic
             </Link>
           </div>
         </div>
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-3">
-        {dict.quickStats.map((stat) => (
-          <div key={stat.label} className="rounded-3xl border theme-border-soft theme-bg-card p-5">
-            <p className="text-xs uppercase tracking-[0.4em] text-muted">{stat.label}</p>
-            <p className="mt-4 text-4xl font-semibold">{stat.value}</p>
-            <p className="text-sm text-muted">{dict.auth.realtime}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-3">
-        {dict.highlights.map((item) => (
-          <div key={item.title} className="rounded-[28px] border theme-border-soft theme-bg-card p-6 backdrop-blur-2xl">
-            <p className="text-xs uppercase tracking-[0.4em] text-muted">{item.label}</p>
-            <h3 className="mt-4 text-2xl font-semibold">{item.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-secondary">{item.body}</p>
-          </div>
-        ))}
       </section>
     </div>
   );

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { MarkdownRenderer } from "@/app/components/MarkdownRenderer";
 import { deleteMemoAction } from "./actions";
 import { getMemoById } from "@/lib/memos";
 import { getDictionary, getLocaleFromRequest, type Locale } from "@/lib/i18n";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 type MemoDetailPageProps = {
   params: { id: string } | Promise<{ id: string }>;
@@ -21,6 +22,10 @@ export default async function MemoDetailPage({ params }: MemoDetailPageProps) {
   const locale = await getLocaleFromRequest();
   const dict = getDictionary(locale).common.memo;
   const dateFormatter = dateTimeFormats[locale] ?? dateTimeFormats.ja;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const resolvedParams = await Promise.resolve(params);
   const memoId = resolvedParams.id;
@@ -33,6 +38,10 @@ export default async function MemoDetailPage({ params }: MemoDetailPageProps) {
 
   if (!memo) {
     notFound();
+  }
+
+  if (!session) {
+    redirect(`/signin?redirect=/memo/${memo.id}`);
   }
 
   return (

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { EditMemoForm } from "../EditMemoForm";
 import { updateMemoAction } from "../actions";
 import { getMemoById } from "@/lib/memos";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 
 type MemoEditPageProps = {
@@ -14,6 +15,10 @@ export const dynamic = "force-dynamic";
 export default async function MemoEditPage({ params }: MemoEditPageProps) {
   const locale = await getLocaleFromRequest();
   const dict = getDictionary(locale).common.memo;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const resolvedParams = await Promise.resolve(params);
   const memoId = resolvedParams.id;
@@ -26,6 +31,10 @@ export default async function MemoEditPage({ params }: MemoEditPageProps) {
 
   if (!memo) {
     notFound();
+  }
+
+  if (!session) {
+    redirect(`/signin?redirect=/memo/${memo.id}/edit`);
   }
 
   return (

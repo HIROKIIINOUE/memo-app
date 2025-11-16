@@ -1,10 +1,20 @@
 import CategoryManager from "@/app/categories/CategoryManager";
 import { CATEGORY_LIMIT, mockCategories } from "@/lib/mockCategories";
 import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { redirect } from "next/navigation";
 
 export default async function CategoriesSettingsPage() {
   const locale = await getLocaleFromRequest();
   const dict = getDictionary(locale).common.categories;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/signin?redirect=/categories");
+  }
 
   return (
     <section className="space-y-10">

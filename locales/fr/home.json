@@ -1,13 +1,13 @@
 {
   "hero": {
     "pill": "pour les makers",
-    "headline": "Concevoir la mémoire avec une touche Apple",
-    "subhead": "Ajoutez des catégories à vos notes Markdown, organisez-les avec élégance et étendez-les facilement avec Supabase.",
+    "headline": "Dessiner votre mémoire et votre créativité",
+    "subhead": "Écrivez en Markdown, classez avec des catégories et reprenez vos notes où que vous soyez.",
     "primaryCta": "Commencer gratuitement",
     "secondaryCta": "Se connecter",
-    "benefits": ["Prévisualisation Markdown", "Auth Supabase", "Navigation type iCloud"],
+    "benefits": ["Aperçu Markdown", "Catégories simples", "Sync sécurisée"],
     "unlocked": "Connectez-vous pour débloquer :",
-    "unlockedItems": ["Créer / éditer / supprimer des mémos", "Recherche plein texte & filtres", "Sync temps réel avec Supabase"]
+    "unlockedItems": ["Créer / éditer / supprimer des mémos", "Recherche plein texte & filtres", "Même contenu sur tous vos appareils"]
   },
   "previewCard": {
     "title": "Organisez vos souvenirs comme un concierge",

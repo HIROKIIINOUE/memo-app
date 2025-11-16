@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import MemoCategoryControls from "@/app/memo/MemoCategoryControls";
 import MemoListing from "@/app/memo/MemoListing";
 import MemoSearchForm from "@/app/memo/MemoSearchForm";
 import { getMemos } from "@/lib/memos";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { getDictionary, getLocaleFromRequest } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +20,14 @@ type MemoIndexPageProps = {
 export default async function MemoIndexPage({ searchParams }: MemoIndexPageProps) {
   const locale = await getLocaleFromRequest();
   const dict = getDictionary(locale).common.memo;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect(`/signin?redirect=/memo`);
+  }
 
   const resolvedSearchParams = await searchParams;
   const rawQuery = resolvedSearchParams?.q;
